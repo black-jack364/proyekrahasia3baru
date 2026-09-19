@@ -194,6 +194,7 @@
                             </h4>
                             <div class="h-64 sm:h-72 relative"><canvas id="chartPemilih"></canvas></div>
                         </div>
+
                         <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                             <div class="bg-white p-4 sm:p-5 rounded-xl border border-slate-200 shadow-sm">
                                 <h4 class="text-sm font-bold text-slate-800 mb-3 flex items-center"><i class="fa-solid fa-venus-mars text-blue-500 mr-2"></i> Jenis Kelamin</h4>
@@ -202,6 +203,19 @@
                             <div class="bg-white p-4 sm:p-5 rounded-xl border border-slate-200 shadow-sm">
                                 <h4 class="text-sm font-bold text-slate-800 mb-3 flex items-center"><i class="fa-solid fa-cake-candles text-amber-500 mr-2"></i> Distribusi Umur</h4>
                                 <div class="h-56 relative"><canvas id="chartUmur"></canvas></div>
+                            </div>
+                        </div>
+
+                        <!-- GRAFIK KETERANGAN WARGA -->
+                        <div class="bg-white p-4 sm:p-5 rounded-xl border border-slate-200 shadow-sm">
+                            <div class="flex flex-col sm:flex-row sm:items-center justify-between mb-3 gap-2">
+                                <h4 class="text-sm font-bold text-slate-800 flex items-center">
+                                    <i class="fa-solid fa-tags text-purple-500 mr-2"></i> Distribusi Keterangan Warga / Pemilih
+                                </h4>
+                                <span class="text-xs text-slate-500 font-normal">Rincian jenis isi keterangan dan jumlah warganya</span>
+                            </div>
+                            <div class="h-64 sm:h-72 relative">
+                                <canvas id="chartKeterangan"></canvas>
                             </div>
                         </div>
                     </div>
@@ -372,6 +386,7 @@
         let chartPemilihInstance = null;
         let chartGenderInstance = null;
         let chartUmurInstance = null;
+        let chartKeteranganInstance = null;
 
         window.onload = function() {
             if (sessionStorage.getItem('isLoggedIn') === 'true') {
@@ -492,6 +507,7 @@
                     if (chartPemilihInstance) chartPemilihInstance.resize();
                     if (chartGenderInstance) chartGenderInstance.resize();
                     if (chartUmurInstance) chartUmurInstance.resize();
+                    if (chartKeteranganInstance) chartKeteranganInstance.resize();
                 }, 50);
             } else {
                 viewChart?.classList.add('hidden');
@@ -702,6 +718,7 @@
             if (!warga) return;
 
             warga.keterangan = newKeterangan;
+            renderDashboard();
             showToast(`Keterangan <strong>${escapeHtml(warga.nama)}</strong> diperbarui`);
 
             if (API_URL && !API_URL.includes("YOUR_APPS_SCRIPT")) {
@@ -766,6 +783,7 @@
             const ctxPemilih = document.getElementById('chartPemilih')?.getContext('2d');
             const ctxGender = document.getElementById('chartGender')?.getContext('2d');
             const ctxUmur = document.getElementById('chartUmur')?.getContext('2d');
+            const ctxKeterangan = document.getElementById('chartKeterangan')?.getContext('2d');
 
             if (ctxPemilih && !chartPemilihInstance) {
                 chartPemilihInstance = new Chart(ctxPemilih, {
@@ -796,10 +814,49 @@
                     options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false } } }
                 });
             }
+
+            // Inisialisasi Grafik Keterangan (Horizontal Bar Chart)
+            if (ctxKeterangan && !chartKeteranganInstance) {
+                chartKeteranganInstance = new Chart(ctxKeterangan, {
+                    type: 'bar',
+                    data: {
+                        labels: [],
+                        datasets: [{
+                            label: 'Jumlah Warga',
+                            data: [],
+                            backgroundColor: []
+                        }]
+                    },
+                    options: {
+                        indexAxis: 'y', // Bar horizontal
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        plugins: {
+                            legend: { display: false },
+                            tooltip: {
+                                callbacks: {
+                                    label: function(context) {
+                                        return ` ${context.parsed.x} Warga`;
+                                    }
+                                }
+                            }
+                        },
+                        scales: {
+                            x: {
+                                beginAtZero: true,
+                                ticks: { precision: 0, font: { size: 10 } }
+                            },
+                            y: {
+                                ticks: { font: { size: 11, weight: '500' } }
+                            }
+                        }
+                    }
+                });
+            }
         }
 
         function updateCharts(data) {
-            if (!chartPemilihInstance || !chartGenderInstance || !chartUmurInstance) {
+            if (!chartPemilihInstance || !chartGenderInstance || !chartUmurInstance || !chartKeteranganInstance) {
                 initCharts();
             }
 
@@ -834,6 +891,35 @@
                     data.filter(w => (w.usia !== undefined ? w.usia : calculateAge(w.tanggalLahir)) > 50).length
                 ];
                 chartUmurInstance.update();
+            }
+
+            // Agregasi Data Keterangan
+            const ketMap = {};
+            data.forEach(w => {
+                let ket = (w.keterangan || '').trim();
+                if (!ket) {
+                    ket = '(Tanpa Keterangan)';
+                }
+                ketMap[ket] = (ketMap[ket] || 0) + 1;
+            });
+
+            // Urutkan keterangan dari jumlah terbanyak
+            const sortedKet = Object.entries(ketMap).sort((a, b) => b[1] - a[1]);
+            const ketLabels = sortedKet.map(item => item[0]);
+            const ketCounts = sortedKet.map(item => item[1]);
+
+            // Warna warni variatif untuk tiap bar keterangan
+            const colorPalette = [
+                '#8b5cf6', '#10b981', '#f59e0b', '#ec4899', '#3b82f6',
+                '#06b6d4', '#f43f5e', '#84cc16', '#6366f1', '#64748b'
+            ];
+            const bgColors = ketLabels.map((_, i) => colorPalette[i % colorPalette.length]);
+
+            if (chartKeteranganInstance) {
+                chartKeteranganInstance.data.labels = ketLabels.length > 0 ? ketLabels : ['(Tidak ada data)'];
+                chartKeteranganInstance.data.datasets[0].data = ketCounts.length > 0 ? ketCounts : [0];
+                chartKeteranganInstance.data.datasets[0].backgroundColor = bgColors;
+                chartKeteranganInstance.update();
             }
         }
 
