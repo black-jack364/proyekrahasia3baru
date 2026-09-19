@@ -31,7 +31,7 @@
 
     <!-- Konfigurasi Google Apps Script Web App URL -->
     <script>
-        const API_URL = "https://script.google.com/macros/s/AKfycbwQcZAuyU7dYPBRnxg8ENTMiDSX1JJkr4IRgYrXIcy9_BS8djrhHhcb4T0fSopPTDY7/exec"; 
+        const API_URL = "https://script.google.com/macros/s/AKfycbxogt1gBQ9Mi8_B7Y8zAbB37y_aPmcYjph4g9md_8Rqsf2RRna-FiXn2xzq-67brUU/exec"; 
         const APP_PASSWORD = "040487";
     </script>
 
@@ -214,7 +214,7 @@
                         <div class="p-4 bg-slate-50 border-b border-slate-200 gap-3 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5">
                             <div class="relative">
                                 <i class="fa-solid fa-magnifying-glass absolute left-3 top-3 text-slate-400 text-xs"></i>
-                                <input type="text" id="search-input" onkeyup="filterData()" placeholder="Cari Nama, NIK, No. KK..." 
+                                <input type="text" id="search-input" onkeyup="filterData()" placeholder="Cari Nama, NIK, KK, Keterangan..." 
                                     class="w-full pl-9 pr-3 py-2 text-xs bg-white border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500">
                             </div>
                             <div>
@@ -258,6 +258,7 @@
                                         <th class="px-3 py-3 text-center">RT</th>
                                         <th class="px-3 py-3 text-center">TPS</th>
                                         <th class="px-4 py-3 text-center min-w-[160px]">STATUS HAK PILIH</th>
+                                        <th class="px-3 py-3 text-left min-w-[180px]">KETERANGAN</th>
                                     </tr>
                                 </thead>
                                 <tbody id="table-body"></tbody>
@@ -341,6 +342,10 @@
                         <option value="Pemilih">Pemilih</option>
                         <option value="Bukan Pemilih" selected>Bukan Pemilih</option>
                     </select>
+                </div>
+                <div>
+                    <label class="block font-semibold text-slate-700 mb-1">Keterangan (Opsional)</label>
+                    <input type="text" id="add-keterangan" placeholder="Catatan / Keterangan tambahan" class="w-full px-3 py-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-indigo-500">
                 </div>
                 <div class="pt-3 flex justify-end space-x-2 border-t border-slate-200 mt-4">
                     <button type="button" onclick="closeAddWargaModal()" class="px-4 py-2 bg-slate-200 hover:bg-slate-300 text-slate-700 rounded-lg font-semibold">Batal</button>
@@ -546,7 +551,11 @@
             const tpsVal = document.getElementById('filter-tps')?.value || 'ALL';
 
             filteredData = dataWarga.filter(item => {
-                const matchSearch = item.nama.toLowerCase().includes(searchVal) || item.nik.includes(searchVal) || item.kk.includes(searchVal);
+                const ketText = (item.keterangan || '').toLowerCase();
+                const matchSearch = item.nama.toLowerCase().includes(searchVal) || 
+                                    item.nik.includes(searchVal) || 
+                                    item.kk.includes(searchVal) ||
+                                    ketText.includes(searchVal);
                 const matchStatus = statusVal === 'ALL' || item.statusPemilih === statusVal;
                 const matchRt = rtVal === 'ALL' || item.rt === rtVal;
                 const matchTps = tpsVal === 'ALL' || item.tps === tpsVal;
@@ -584,7 +593,7 @@
             const pageData = data.slice(startIndex, endIndex);
 
             if (pageData.length === 0) {
-                tableBody.innerHTML = `<tr><td colspan="11" class="px-6 py-10 text-center text-slate-400"><p class="font-medium text-slate-500">Data warga tidak ditemukan</p></td></tr>`;
+                tableBody.innerHTML = `<tr><td colspan="12" class="px-6 py-10 text-center text-slate-400"><p class="font-medium text-slate-500">Data warga tidak ditemukan</p></td></tr>`;
                 renderPagination(0, 0, 0, 1);
                 return;
             }
@@ -619,6 +628,12 @@
                                 <option value="Bukan Pemilih" ${warga.statusPemilih === 'Bukan Pemilih' ? 'selected' : ''}>Bukan Pemilih</option>
                             </select>
                         </td>
+                        <td class="px-3 py-3">
+                            <input type="text" value="${escapeHtml(warga.keterangan || '')}" 
+                                onchange="setKeterangan('${warga.id}', this.value)" 
+                                placeholder="Tambah keterangan..." 
+                                class="w-full px-2.5 py-1 text-xs border border-slate-300 rounded-md focus:outline-none focus:ring-1 focus:ring-indigo-500 bg-white text-slate-800 shadow-sm transition">
+                        </td>
                     </tr>`;
             });
             tableBody.innerHTML = html;
@@ -633,6 +648,20 @@
                 showToast(`Status <strong>${escapeHtml(warga.nama)}</strong> diubah menjadi <strong>${newStatus}</strong>`);
                 if (API_URL && !API_URL.includes("URL_WEB_APP")) {
                     fetch(API_URL, { method: "POST", body: JSON.stringify({ action: "updateStatus", id: id, statusPemilih: newStatus }) }).catch(err => console.error(err));
+                }
+            }
+        }
+
+        function setKeterangan(id, newKeterangan) {
+            const warga = dataWarga.find(w => String(w.id) === String(id));
+            if (warga) {
+                warga.keterangan = newKeterangan;
+                showToast(`Keterangan <strong>${escapeHtml(warga.nama)}</strong> diperbarui.`);
+                if (API_URL && !API_URL.includes("URL_WEB_APP")) {
+                    fetch(API_URL, { 
+                        method: "POST", 
+                        body: JSON.stringify({ action: "updateKeterangan", id: id, keterangan: newKeterangan }) 
+                    }).catch(err => console.error(err));
                 }
             }
         }
@@ -749,7 +778,8 @@
                 jk: document.getElementById('add-jk').value,
                 rt: document.getElementById('add-rt').value,
                 tps: document.getElementById('add-tps').value,
-                statusPemilih: document.getElementById('add-status').value
+                statusPemilih: document.getElementById('add-status').value,
+                keterangan: document.getElementById('add-keterangan').value.trim()
             };
 
             const birth = new Date(newWarga.tanggalLahir);
@@ -774,7 +804,7 @@
             const doc = new jsPDF({ orientation: 'landscape', unit: 'mm', format: 'a4' });
             
             doc.setFontSize(14);
-            doc.text("DAFTAR PEMILIH & DATA WARGA", 20, 15);
+            doc.text("DAFTAR PEMILIH & DATA WARGA", 14, 15);
 
             const newGroupRowIndexes = [];
             let lastKK = null;
@@ -786,10 +816,23 @@
             });
 
             doc.autoTable({
-                head: [["NO", "NO. KK", "NIK", "NAMA LENGKAP", "TEMPAT LAHIR", "TGL LAHIR", "UMUR", "JK", "RT", "TPS", "STATUS"]],
-                body: filteredData.map((item, idx) => [idx + 1, item.kk, item.nik, item.nama, item.tempatLahir, formatDateIndo(item.tanggalLahir), item.usia, item.jk, item.rt, item.tps, item.statusPemilih]),
-                startY: 25,
-                styles: { fontSize: 8 },
+                head: [["NO", "NO. KK", "NIK", "NAMA LENGKAP", "TEMPAT LAHIR", "TGL LAHIR", "UMUR", "JK", "RT", "TPS", "STATUS", "KETERANGAN"]],
+                body: filteredData.map((item, idx) => [
+                    idx + 1, 
+                    item.kk, 
+                    item.nik, 
+                    item.nama, 
+                    item.tempatLahir, 
+                    formatDateIndo(item.tanggalLahir), 
+                    item.usia, 
+                    item.jk, 
+                    item.rt, 
+                    item.tps, 
+                    item.statusPemilih,
+                    item.keterangan || '-'
+                ]),
+                startY: 22,
+                styles: { fontSize: 7.5 },
                 didDrawCell: function(data) {
                     if (data.section === 'body' && newGroupRowIndexes.includes(data.row.index)) {
                         doc.setDrawColor(0, 0, 0); 
