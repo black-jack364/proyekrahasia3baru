@@ -645,9 +645,22 @@
             if (warga) {
                 warga.statusPemilih = newStatus;
                 renderDashboard();
-                showToast(`Status <strong>${escapeHtml(warga.nama)}</strong> diubah menjadi <strong>${newStatus}</strong>`);
+                showToast(`Menyimpan perubahan status...`);
+
                 if (API_URL && !API_URL.includes("URL_WEB_APP")) {
-                    fetch(API_URL, { method: "POST", body: JSON.stringify({ action: "updateStatus", id: id, statusPemilih: newStatus }) }).catch(err => console.error(err));
+                    fetch(API_URL, { 
+                        method: "POST", 
+                        headers: { "Content-Type": "text/plain;charset=utf-8" },
+                        body: JSON.stringify({ action: "updateStatus", id: id, statusPemilih: newStatus }) 
+                    })
+                    .then(res => res.json())
+                    .then(res => {
+                        showToast(`Status <strong>${escapeHtml(warga.nama)}</strong> berhasil diperbarui di Spreadsheet!`);
+                    })
+                    .catch(err => {
+                        console.error("Gagal update status:", err);
+                        showToast(`Status diperbarui lokal (Gagal terhubung ke Sheet)`);
+                    });
                 }
             }
         }
@@ -656,12 +669,28 @@
             const warga = dataWarga.find(w => String(w.id) === String(id));
             if (warga) {
                 warga.keterangan = newKeterangan;
-                showToast(`Keterangan <strong>${escapeHtml(warga.nama)}</strong> diperbarui.`);
+                showToast(`Menyimpan keterangan ke Spreadsheet...`);
+
                 if (API_URL && !API_URL.includes("URL_WEB_APP")) {
                     fetch(API_URL, { 
                         method: "POST", 
+                        headers: { "Content-Type": "text/plain;charset=utf-8" },
                         body: JSON.stringify({ action: "updateKeterangan", id: id, keterangan: newKeterangan }) 
-                    }).catch(err => console.error(err));
+                    })
+                    .then(res => res.json())
+                    .then(res => {
+                        if (res.status === "success") {
+                            showToast(`Keterangan <strong>${escapeHtml(warga.nama)}</strong> berhasil tersimpan di Spreadsheet!`);
+                        } else {
+                            showToast(`Keterangan diperbarui (Respon: ${res.message || 'Ok'})`);
+                        }
+                    })
+                    .catch(err => {
+                        console.error("Gagal update keterangan:", err);
+                        showToast(`Keterangan diperbarui secara lokal.`);
+                    });
+                } else {
+                    showToast(`Keterangan <strong>${escapeHtml(warga.nama)}</strong> diperbarui.`);
                 }
             }
         }
@@ -791,10 +820,22 @@
             dataWarga.push(newWarga);
             closeAddWargaModal();
             filterData();
-            showToast(`Warga <strong>${escapeHtml(newWarga.nama)}</strong> berhasil ditambahkan!`);
+            showToast(`Menambahkan <strong>${escapeHtml(newWarga.nama)}</strong> ke Spreadsheet...`);
 
             if (API_URL && !API_URL.includes("URL_WEB_APP")) {
-                fetch(API_URL, { method: "POST", body: JSON.stringify({ action: "add", ...newWarga }) }).catch(err => console.error(err));
+                fetch(API_URL, { 
+                    method: "POST", 
+                    headers: { "Content-Type": "text/plain;charset=utf-8" },
+                    body: JSON.stringify({ action: "add", ...newWarga }) 
+                })
+                .then(res => res.json())
+                .then(res => {
+                    showToast(`Warga <strong>${escapeHtml(newWarga.nama)}</strong> berhasil tersimpan di Spreadsheet!`);
+                })
+                .catch(err => {
+                    console.error("Gagal menyimpan data baru:", err);
+                    showToast(`Data warga ditambahkan di lokal.`);
+                });
             }
         }
 
