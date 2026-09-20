@@ -795,7 +795,42 @@
                             { label: 'Bukan Pemilih', data: new Array(36).fill(0), backgroundColor: '#f43f5e' }
                         ]
                     },
-                    options: { responsive: true, maintainAspectRatio: false, scales: { x: { ticks: { font: { size: 9 }, maxRotation: 90 } } } }
+                    options: { 
+                        responsive: true, 
+                        maintainAspectRatio: false, 
+                        layout: {
+                            padding: {
+                                top: 16 // Memberikan ruang di bagian atas agar angka tidak terpotong
+                            }
+                        },
+                        scales: { 
+                            x: { ticks: { font: { size: 9 }, maxRotation: 90 } },
+                            y: { beginAtZero: true }
+                        } 
+                    },
+                    plugins: [{
+                        id: 'topValueLabels',
+                        afterDatasetsDraw(chart) {
+                            const { ctx } = chart;
+                            chart.data.datasets.forEach((dataset, datasetIndex) => {
+                                const meta = chart.getDatasetMeta(datasetIndex);
+                                if (!meta.hidden) {
+                                    meta.data.forEach((bar, index) => {
+                                        const val = dataset.data[index];
+                                        if (val !== undefined && val !== null && val > 0) {
+                                            ctx.save();
+                                            ctx.font = 'bold 9px Inter, sans-serif';
+                                            ctx.fillStyle = datasetIndex === 0 ? '#047857' : '#be123c';
+                                            ctx.textAlign = 'center';
+                                            ctx.textBaseline = 'bottom';
+                                            ctx.fillText(val, bar.x, bar.y - 2);
+                                            ctx.restore();
+                                        }
+                                    });
+                                }
+                            });
+                        }
+                    }]
                 });
             }
 
@@ -815,7 +850,7 @@
                 });
             }
 
-            // Inisialisasi Grafik Keterangan (Horizontal Bar Chart)
+            // Inisialisasi Grafik Keterangan (Horizontal Bar Chart) dengan Plugin Angka di Sebelah Kanan Bar
             if (ctxKeterangan && !chartKeteranganInstance) {
                 chartKeteranganInstance = new Chart(ctxKeterangan, {
                     type: 'bar',
@@ -831,6 +866,11 @@
                         indexAxis: 'y', // Bar horizontal
                         responsive: true,
                         maintainAspectRatio: false,
+                        layout: {
+                            padding: {
+                                right: 40 // Memberikan ruang ekstra di sebelah kanan agar teks angka tidak terpotong
+                            }
+                        },
                         plugins: {
                             legend: { display: false },
                             tooltip: {
@@ -850,7 +890,32 @@
                                 ticks: { font: { size: 11, weight: '500' } }
                             }
                         }
-                    }
+                    },
+                    // Plugin kustom untuk menggambar label jumlah angka di sebelah kanan ujung chart bar
+                    plugins: [{
+                        id: 'rightValueLabels',
+                        afterDatasetsDraw(chart) {
+                            const { ctx } = chart;
+                            chart.data.datasets.forEach((dataset, datasetIndex) => {
+                                const meta = chart.getDatasetMeta(datasetIndex);
+                                if (!meta.hidden) {
+                                    meta.data.forEach((bar, index) => {
+                                        const val = dataset.data[index];
+                                        if (val !== undefined && val !== null) {
+                                            ctx.save();
+                                            ctx.font = 'bold 11px Inter, sans-serif';
+                                            ctx.fillStyle = '#1e293b'; // slate-800
+                                            ctx.textAlign = 'left';
+                                            ctx.textBaseline = 'middle';
+                                            // Tampilkan nilai angka di sebelah kanan ujung bar
+                                            ctx.fillText(val + ' Warga', bar.x + 8, bar.y);
+                                            ctx.restore();
+                                        }
+                                    });
+                                }
+                            });
+                        }
+                    }]
                 });
             }
         }
