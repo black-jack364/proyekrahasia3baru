@@ -99,13 +99,21 @@
                     <i class="fa-solid fa-users-viewfinder w-5 text-center text-indigo-400"></i>
                     <span>Data Warga & Pemilih</span>
                 </button>
+                <button id="nav-rincian" onclick="switchView('rincian')" class="w-full flex items-center space-x-3 px-3 py-2.5 rounded-lg text-slate-300 hover:bg-slate-800 hover:text-white font-medium text-sm transition">
+                    <i class="fa-solid fa-clipboard-list w-5 text-center text-amber-400"></i>
+                    <span>Rincian Pemilih</span>
+                </button>
                 <button onclick="openAddWargaModal()" class="w-full flex items-center space-x-3 px-3 py-2.5 rounded-lg text-slate-300 hover:bg-slate-800 hover:text-white font-medium text-sm transition">
                     <i class="fa-solid fa-user-plus w-5 text-center text-emerald-400"></i>
                     <span>Tambah Data Warga</span>
                 </button>
                 <button onclick="exportDataToPDF()" class="w-full flex items-center space-x-3 px-3 py-2.5 rounded-lg text-slate-300 hover:bg-slate-800 hover:text-white font-medium text-sm transition">
                     <i class="fa-solid fa-file-pdf w-5 text-center text-rose-400"></i>
-                    <span>Ekspor Data (PDF)</span>
+                    <span>Ekspor Data Warga (PDF)</span>
+                </button>
+                <button onclick="exportRincianToPDF()" class="w-full flex items-center space-x-3 px-3 py-2.5 rounded-lg text-slate-300 hover:bg-slate-800 hover:text-white font-medium text-sm transition">
+                    <i class="fa-solid fa-file-arrow-down w-5 text-center text-amber-400"></i>
+                    <span>Ekspor Rincian (PDF)</span>
                 </button>
             </nav>
 
@@ -121,7 +129,7 @@
         <div class="flex-1 flex flex-col min-w-0 overflow-y-auto">
             <header class="bg-white border-b border-slate-200 sticky top-0 z-30 px-4 py-3 sm:px-6 flex items-center justify-between shadow-sm">
                 <div class="flex items-center space-x-3">
-                    <button onclick="toggleSidebar()" class="p-2 text-slate-600 hover:text-slate-900 hover:bg-slate-100 rounded-lg transition md:hidden">
+                    <button onclick="toggleSidebar()" class="p-2 text-slate-600 hover:text-slate-900 hover:bg-slate-100 rounded-lg transition" title="Buka/Sembunyikan Sidebar">
                         <i class="fa-solid fa-bars text-lg"></i>
                     </button>
                     <div>
@@ -147,6 +155,7 @@
             <main class="p-4 sm:p-6 space-y-6 flex-1">
                 <!-- VIEW 1: GRAFIK & STATISTIK -->
                 <div id="view-chart" class="space-y-6">
+                    <!-- Summary Cards -->
                     <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
                         <div class="bg-white p-4 rounded-xl border border-slate-200 shadow-sm flex items-center justify-between">
                             <div>
@@ -187,6 +196,7 @@
                     </div>
 
                     <div class="space-y-6">
+                        <!-- Chart: Status Hak Pilih per RT -->
                         <div class="bg-white p-4 sm:p-5 rounded-xl border border-slate-200 shadow-sm">
                             <h4 class="text-sm font-bold text-slate-800 mb-3 flex items-center justify-between">
                                 <span class="flex items-center"><i class="fa-solid fa-chart-column text-indigo-500 mr-2"></i> Status Hak Pilih per RT (RT 001 - RT 036)</span>
@@ -195,6 +205,28 @@
                             <div class="h-64 sm:h-72 relative"><canvas id="chartPemilih"></canvas></div>
                         </div>
 
+                        <!-- GRAFIK BATANG KETERANGAN DATA WARGA DAN PEMILIH -->
+                        <div class="bg-white p-4 sm:p-5 rounded-xl border border-slate-200 shadow-sm">
+                            <div class="flex flex-col sm:flex-row sm:items-center justify-between mb-3 gap-2">
+                                <h4 class="text-sm font-bold text-slate-800 flex items-center">
+                                    <i class="fa-solid fa-chart-bar text-purple-600 mr-2"></i> Grafik Batang Keterangan Data Warga & Status Pemilih
+                                </h4>
+                                <div class="flex items-center space-x-3 text-xs">
+                                    <span class="flex items-center font-medium text-emerald-700">
+                                        <span class="w-3 h-3 inline-block rounded-sm bg-emerald-500 mr-1.5"></span> Pemilih
+                                    </span>
+                                    <span class="flex items-center font-medium text-rose-700">
+                                        <span class="w-3 h-3 inline-block rounded-sm bg-rose-500 mr-1.5"></span> Bukan Pemilih
+                                    </span>
+                                </div>
+                            </div>
+                            <p class="text-xs text-slate-500 mb-4">Grafik rincian kategori keterangan warga vertikal beserta perincian status pemilih dan jumlah angka otomatis di atas batang.</p>
+                            <div class="min-h-[300px] h-72 sm:h-80 relative">
+                                <canvas id="chartKeterangan"></canvas>
+                            </div>
+                        </div>
+
+                        <!-- Secondary Charts Grid -->
                         <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                             <div class="bg-white p-4 sm:p-5 rounded-xl border border-slate-200 shadow-sm">
                                 <h4 class="text-sm font-bold text-slate-800 mb-3 flex items-center"><i class="fa-solid fa-venus-mars text-blue-500 mr-2"></i> Jenis Kelamin</h4>
@@ -203,19 +235,6 @@
                             <div class="bg-white p-4 sm:p-5 rounded-xl border border-slate-200 shadow-sm">
                                 <h4 class="text-sm font-bold text-slate-800 mb-3 flex items-center"><i class="fa-solid fa-cake-candles text-amber-500 mr-2"></i> Distribusi Umur</h4>
                                 <div class="h-56 relative"><canvas id="chartUmur"></canvas></div>
-                            </div>
-                        </div>
-
-                        <!-- GRAFIK KETERANGAN WARGA -->
-                        <div class="bg-white p-4 sm:p-5 rounded-xl border border-slate-200 shadow-sm">
-                            <div class="flex flex-col sm:flex-row sm:items-center justify-between mb-3 gap-2">
-                                <h4 class="text-sm font-bold text-slate-800 flex items-center">
-                                    <i class="fa-solid fa-tags text-purple-500 mr-2"></i> Distribusi Keterangan Warga / Pemilih
-                                </h4>
-                                <span class="text-xs text-slate-500 font-normal">Rincian jenis isi keterangan dan jumlah warganya</span>
-                            </div>
-                            <div class="h-64 sm:h-72 relative">
-                                <canvas id="chartKeterangan"></canvas>
                             </div>
                         </div>
                     </div>
@@ -295,6 +314,43 @@
                         </div>
                     </div>
                 </div>
+
+                <!-- VIEW 3: RINCIAN PEMILIH (TABEL KETERANGAN PER RT DENGAN GARIS HITAM) -->
+                <div id="view-rincian" class="space-y-6 hidden">
+                    <div class="bg-white rounded-xl border border-slate-200 shadow-sm overflow-hidden flex flex-col">
+                        <div class="p-4 bg-slate-50 border-b border-slate-200 flex flex-col sm:flex-row items-center justify-between gap-3">
+                            <div>
+                                <h3 class="font-bold text-slate-800 text-sm flex items-center">
+                                    <i class="fa-solid fa-clipboard-list text-amber-500 mr-2"></i>
+                                    Tabel Rincian Keterangan Pemilih per RT (RT 001 - RT 036)
+                                </h3>
+                                <p class="text-xs text-slate-500 mt-0.5">Rekapitulasi jumlah warga berdasarkan kategori Keterangan di masing-masing RT.</p>
+                            </div>
+                            <div class="flex flex-wrap items-center space-x-2 w-full sm:w-auto">
+                                <select id="rincian-filter-status" onchange="renderRincianPemilih()" class="py-2 px-3 text-xs bg-white border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500">
+                                    <option value="ALL">-- Semua Status Pemilih --</option>
+                                    <option value="Pemilih">Khusus Pemilih</option>
+                                    <option value="Bukan Pemilih">Khusus Bukan Pemilih</option>
+                                </select>
+                                <input type="text" id="rincian-search" onkeyup="renderRincianPemilih()" placeholder="Cari Keterangan..." class="py-2 px-3 text-xs bg-white border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500">
+                                <button onclick="exportRincianToPDF()" class="py-2 px-3 bg-rose-600 hover:bg-rose-700 active:scale-95 text-white text-xs font-semibold rounded-lg transition flex items-center space-x-1.5 shadow-sm">
+                                    <i class="fa-solid fa-file-pdf"></i>
+                                    <span>Download PDF (Landscape)</span>
+                                </button>
+                            </div>
+                        </div>
+
+                        <div class="overflow-x-auto min-h-[350px] relative p-1">
+                            <table class="w-full text-xs text-left text-slate-700 border-collapse border border-black">
+                                <thead class="bg-slate-900 text-white uppercase font-bold text-[11px] tracking-wider sticky top-0 z-10">
+                                    <tr id="rincian-table-header"></tr>
+                                </thead>
+                                <tbody id="rincian-table-body"></tbody>
+                                <tfoot id="rincian-table-footer" class="bg-slate-100 font-bold border-t-2 border-black text-slate-900"></tfoot>
+                            </table>
+                        </div>
+                    </div>
+                </div>
             </main>
         </div>
     </div>
@@ -368,6 +424,21 @@
         </div>
     </div>
 
+    <!-- Modal Konfirmasi Hapus Data Warga -->
+    <div id="modal-delete" class="fixed inset-0 bg-slate-900/60 backdrop-blur-sm z-50 flex items-center justify-center p-4 hidden">
+        <div class="bg-white rounded-xl shadow-2xl max-w-sm w-full p-5 border border-slate-200 text-center">
+            <div class="w-12 h-12 rounded-full bg-rose-100 text-rose-600 flex items-center justify-center mx-auto mb-3">
+                <i class="fa-solid fa-trash-can text-xl"></i>
+            </div>
+            <h3 class="text-base font-bold text-slate-800">Hapus Data Warga</h3>
+            <p class="text-xs text-slate-500 mt-1 mb-5">Apakah Anda yakin ingin menghapus data <strong id="delete-warga-name" class="text-slate-800 font-semibold"></strong>? Bar chart dan statistik akan diperbarui secara otomatis.</p>
+            <div class="flex space-x-2">
+                <button onclick="closeDeleteModal()" class="flex-1 py-2 bg-slate-100 hover:bg-slate-200 text-slate-700 font-semibold rounded-lg text-xs transition">Batal</button>
+                <button onclick="confirmDeleteWarga()" class="flex-1 py-2 bg-rose-600 hover:bg-rose-700 text-white font-semibold rounded-lg text-xs shadow-md transition">Hapus</button>
+            </div>
+        </div>
+    </div>
+
     <!-- Toast Notification -->
     <div id="toast" class="fixed bottom-5 right-5 z-50 transform translate-y-20 opacity-0 transition-all duration-300 pointer-events-none">
         <div class="bg-slate-900 text-white px-4 py-3 rounded-xl shadow-xl flex items-center space-x-3 text-xs border border-slate-700">
@@ -382,6 +453,7 @@
         let currentPage = 1;
         let itemsPerPage = 25;
         let filteredData = [];
+        let deleteTargetId = null;
 
         let chartPemilihInstance = null;
         let chartGenderInstance = null;
@@ -491,17 +563,25 @@
             activeView = view;
             const viewChart = document.getElementById('view-chart');
             const viewTable = document.getElementById('view-table');
+            const viewRincian = document.getElementById('view-rincian');
             const navChart = document.getElementById('nav-chart');
             const navTable = document.getElementById('nav-table');
+            const navRincian = document.getElementById('nav-rincian');
             const headerTitle = document.getElementById('header-title');
+
+            [navChart, navTable, navRincian].forEach(nav => {
+                if (nav) {
+                    nav.classList.remove('bg-indigo-600', 'text-white');
+                    nav.classList.add('text-slate-300', 'hover:bg-slate-800');
+                }
+            });
 
             if (view === 'chart') {
                 viewChart?.classList.remove('hidden');
                 viewTable?.classList.add('hidden');
+                viewRincian?.classList.add('hidden');
                 navChart?.classList.add('bg-indigo-600', 'text-white');
                 navChart?.classList.remove('text-slate-300', 'hover:bg-slate-800');
-                navTable?.classList.remove('bg-indigo-600', 'text-white');
-                navTable?.classList.add('text-slate-300', 'hover:bg-slate-800');
                 if (headerTitle) headerTitle.innerText = "Grafik & Statistik Pendataan Warga";
                 setTimeout(() => {
                     if (chartPemilihInstance) chartPemilihInstance.resize();
@@ -509,23 +589,43 @@
                     if (chartUmurInstance) chartUmurInstance.resize();
                     if (chartKeteranganInstance) chartKeteranganInstance.resize();
                 }, 50);
-            } else {
+            } else if (view === 'table') {
                 viewChart?.classList.add('hidden');
                 viewTable?.classList.remove('hidden');
+                viewRincian?.classList.add('hidden');
                 navTable?.classList.add('bg-indigo-600', 'text-white');
                 navTable?.classList.remove('text-slate-300', 'hover:bg-slate-800');
-                navChart?.classList.remove('bg-indigo-600', 'text-white');
-                navChart?.classList.add('text-slate-300', 'hover:bg-slate-800');
                 if (headerTitle) headerTitle.innerText = "Daftar Pemilih & Data Warga";
+            } else if (view === 'rincian') {
+                viewChart?.classList.add('hidden');
+                viewTable?.classList.add('hidden');
+                viewRincian?.classList.remove('hidden');
+                navRincian?.classList.add('bg-indigo-600', 'text-white');
+                navRincian?.classList.remove('text-slate-300', 'hover:bg-slate-800');
+                if (headerTitle) headerTitle.innerText = "Rincian Data Pemilih & Keterangan per RT";
+                renderRincianPemilih();
             }
         }
 
         function toggleSidebar() {
             const sidebar = document.getElementById('sidebar');
             const backdrop = document.getElementById('sidebar-backdrop');
-            if (!sidebar || !backdrop) return;
-            sidebar.classList.toggle('-translate-x-full');
-            backdrop.classList.toggle('hidden');
+            if (!sidebar) return;
+
+            const isMobile = window.innerWidth < 768;
+
+            if (isMobile) {
+                sidebar.classList.toggle('-translate-x-full');
+                if (backdrop) backdrop.classList.toggle('hidden');
+            } else {
+                sidebar.classList.toggle('md:-ml-64');
+                setTimeout(() => {
+                    if (chartPemilihInstance) chartPemilihInstance.resize();
+                    if (chartGenderInstance) chartGenderInstance.resize();
+                    if (chartUmurInstance) chartUmurInstance.resize();
+                    if (chartKeteranganInstance) chartKeteranganInstance.resize();
+                }, 305);
+            }
         }
 
         function formatDateIndo(dateStr) {
@@ -630,6 +730,97 @@
             renderTable(filteredData);
             updateStats(filteredData);
             updateCharts(filteredData);
+            if (activeView === 'rincian') {
+                renderRincianPemilih();
+            }
+        }
+
+        function renderRincianPemilih() {
+            const headerEl = document.getElementById('rincian-table-header');
+            const bodyEl = document.getElementById('rincian-table-body');
+            const footerEl = document.getElementById('rincian-table-footer');
+
+            if (!headerEl || !bodyEl || !footerEl) return;
+
+            const statusFilter = document.getElementById('rincian-filter-status')?.value || 'ALL';
+            const searchVal = document.getElementById('rincian-search')?.value.toLowerCase().trim() || '';
+
+            let sourceData = dataWarga;
+            if (statusFilter !== 'ALL') {
+                sourceData = dataWarga.filter(w => w.statusPemilih === statusFilter);
+            }
+
+            const ketMap = {};
+            sourceData.forEach(w => {
+                let ket = (w.keterangan || '').trim();
+                if (!ket) ket = '(Tanpa Keterangan)';
+
+                if (searchVal && !ket.toLowerCase().includes(searchVal)) return;
+
+                if (!ketMap[ket]) {
+                    ketMap[ket] = new Array(37).fill(0);
+                }
+
+                const rtNum = parseInt(w.rt, 10);
+                if (rtNum >= 1 && rtNum <= 36) {
+                    ketMap[ket][rtNum]++;
+                    ketMap[ket][0]++;
+                }
+            });
+
+            // Judul Kolom Tabel dengan Garis Hitam
+            let headerHtml = `<th class="px-3 py-3 text-center sticky left-0 z-20 bg-slate-900 text-white border border-black shadow-md w-10">NO</th>`;
+            headerHtml += `<th class="px-4 py-3 text-left sticky left-10 z-20 bg-slate-900 text-white border border-black shadow-md min-w-[180px]">KETERANGAN</th>`;
+            for (let i = 1; i <= 36; i++) {
+                headerHtml += `<th class="px-2 py-3 text-center border border-black min-w-[55px]">RT ${String(i).padStart(3, '0')}</th>`;
+            }
+            headerHtml += `<th class="px-4 py-3 text-center border border-black bg-indigo-950 text-indigo-200 min-w-[80px]">TOTAL</th>`;
+            headerEl.innerHTML = headerHtml;
+
+            const sortedKets = Object.keys(ketMap).sort((a, b) => ketMap[b][0] - ketMap[a][0]);
+
+            if (sortedKets.length === 0) {
+                bodyEl.innerHTML = `<tr><td colspan="39" class="px-6 py-10 text-center text-slate-500 border border-black">Tidak ada data rincian keterangan yang sesuai.</td></tr>`;
+                footerEl.innerHTML = '';
+                return;
+            }
+
+            const colTotals = new Array(37).fill(0);
+            let bodyHtml = '';
+
+            sortedKets.forEach((ket, idx) => {
+                const rowData = ketMap[ket];
+                colTotals[0] += rowData[0];
+
+                bodyHtml += `<tr class="hover:bg-slate-100 transition">`;
+                bodyHtml += `<td class="px-3 py-2.5 text-center font-semibold text-slate-800 sticky left-0 bg-white z-10 border border-black">${idx + 1}</td>`;
+                bodyHtml += `<td class="px-4 py-2.5 font-semibold text-slate-900 sticky left-10 bg-white z-10 border border-black truncate">${escapeHtml(ket)}</td>`;
+
+                for (let rt = 1; rt <= 36; rt++) {
+                    const count = rowData[rt];
+                    colTotals[rt] += count;
+                    const badge = count > 0 
+                        ? `<span class="px-1.5 py-0.5 rounded text-xs font-bold bg-amber-100 text-amber-900">${count}</span>` 
+                        : `<span class="text-slate-400">-</span>`;
+                    bodyHtml += `<td class="px-2 py-2.5 text-center border border-black">${badge}</td>`;
+                }
+
+                bodyHtml += `<td class="px-4 py-2.5 text-center font-bold text-indigo-900 bg-indigo-50 border border-black">${rowData[0]}</td>`;
+                bodyHtml += `</tr>`;
+            });
+
+            bodyEl.innerHTML = bodyHtml;
+
+            // Baris Total per RT (Footer dengan Garis Hitam)
+            let footerHtml = `<tr>`;
+            footerHtml += `<td colspan="2" class="px-4 py-3 text-right font-extrabold uppercase sticky left-0 z-10 bg-slate-200 text-slate-900 border border-black">TOTAL PER RT:</td>`;
+            for (let rt = 1; rt <= 36; rt++) {
+                footerHtml += `<td class="px-2 py-3 text-center font-bold border border-black text-slate-900">${colTotals[rt] > 0 ? colTotals[rt] : '-'}</td>`;
+            }
+            footerHtml += `<td class="px-4 py-3 text-center font-extrabold text-sm text-indigo-950 bg-indigo-100 border border-black">${colTotals[0]}</td>`;
+            footerHtml += `</tr>`;
+
+            footerEl.innerHTML = footerHtml;
         }
 
         function renderTable(data) {
@@ -695,6 +886,41 @@
             });
             tableBody.innerHTML = html;
             renderPagination(totalItems, startIndex + 1, endIndex, totalPages);
+        }
+
+        function openDeleteModal(id) {
+            deleteTargetId = id;
+            const warga = dataWarga.find(w => String(w.id) === String(id));
+            if (!warga) return;
+            const nameEl = document.getElementById('delete-warga-name');
+            if (nameEl) nameEl.innerText = warga.nama;
+            const modal = document.getElementById('modal-delete');
+            if (modal) modal.classList.remove('hidden');
+        }
+
+        function closeDeleteModal() {
+            deleteTargetId = null;
+            const modal = document.getElementById('modal-delete');
+            if (modal) modal.classList.add('hidden');
+        }
+
+        function confirmDeleteWarga() {
+            if (!deleteTargetId) return;
+            const warga = dataWarga.find(w => String(w.id) === String(deleteTargetId));
+            const targetName = warga ? warga.nama : 'Warga';
+
+            dataWarga = dataWarga.filter(w => String(w.id) !== String(deleteTargetId));
+            closeDeleteModal();
+
+            filterData();
+            showToast(`Data <strong>${escapeHtml(targetName)}</strong> berhasil dihapus.`);
+
+            if (API_URL && !API_URL.includes("YOUR_APPS_SCRIPT")) {
+                fetch(API_URL, { 
+                    method: "POST", 
+                    body: JSON.stringify({ action: "delete", id: deleteTargetId }) 
+                }).catch(err => console.error("Error deleteWarga:", err));
+            }
         }
 
         function setStatusPemilih(id, newStatus) {
@@ -785,6 +1011,7 @@
             const ctxUmur = document.getElementById('chartUmur')?.getContext('2d');
             const ctxKeterangan = document.getElementById('chartKeterangan')?.getContext('2d');
 
+            // 1. Chart Pemilih per RT (Vertical Grouped Bar)
             if (ctxPemilih && !chartPemilihInstance) {
                 chartPemilihInstance = new Chart(ctxPemilih, {
                     type: 'bar',
@@ -798,18 +1025,14 @@
                     options: { 
                         responsive: true, 
                         maintainAspectRatio: false, 
-                        layout: {
-                            padding: {
-                                top: 16 // Memberikan ruang di bagian atas agar angka tidak terpotong
-                            }
-                        },
+                        layout: { padding: { top: 18 } },
                         scales: { 
                             x: { ticks: { font: { size: 9 }, maxRotation: 90 } },
                             y: { beginAtZero: true }
                         } 
                     },
                     plugins: [{
-                        id: 'topValueLabels',
+                        id: 'pemilihTopValueLabels',
                         afterDatasetsDraw(chart) {
                             const { ctx } = chart;
                             chart.data.datasets.forEach((dataset, datasetIndex) => {
@@ -834,66 +1057,29 @@
                 });
             }
 
+            // 2. Chart Gender (Pie Chart)
             if (ctxGender && !chartGenderInstance) {
                 chartGenderInstance = new Chart(ctxGender, {
                     type: 'pie',
-                    data: { labels: ['L', 'P'], datasets: [{ data: [0, 0], backgroundColor: ['#3b82f6', '#ec4899'] }] },
+                    data: { labels: ['Laki-Laki', 'Perempuan'], datasets: [{ data: [0, 0], backgroundColor: ['#3b82f6', '#ec4899'] }] },
                     options: { responsive: true, maintainAspectRatio: false }
                 });
             }
 
+            // 3. Chart Umur (Bar Chart dengan Angka di Atas Batang)
             if (ctxUmur && !chartUmurInstance) {
                 chartUmurInstance = new Chart(ctxUmur, {
                     type: 'bar',
                     data: { labels: ['< 17 Thn', '17-30 Thn', '31-50 Thn', '> 50 Thn'], datasets: [{ data: [0, 0, 0, 0], backgroundColor: '#6366f1' }] },
-                    options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false } } }
-                });
-            }
-
-            // Inisialisasi Grafik Keterangan (Horizontal Bar Chart) dengan Plugin Angka di Sebelah Kanan Bar
-            if (ctxKeterangan && !chartKeteranganInstance) {
-                chartKeteranganInstance = new Chart(ctxKeterangan, {
-                    type: 'bar',
-                    data: {
-                        labels: [],
-                        datasets: [{
-                            label: 'Jumlah Warga',
-                            data: [],
-                            backgroundColor: []
-                        }]
+                    options: { 
+                        responsive: true, 
+                        maintainAspectRatio: false, 
+                        layout: { padding: { top: 20 } },
+                        plugins: { legend: { display: false } },
+                        scales: { y: { beginAtZero: true } }
                     },
-                    options: {
-                        indexAxis: 'y', // Bar horizontal
-                        responsive: true,
-                        maintainAspectRatio: false,
-                        layout: {
-                            padding: {
-                                right: 40 // Memberikan ruang ekstra di sebelah kanan agar teks angka tidak terpotong
-                            }
-                        },
-                        plugins: {
-                            legend: { display: false },
-                            tooltip: {
-                                callbacks: {
-                                    label: function(context) {
-                                        return ` ${context.parsed.x} Warga`;
-                                    }
-                                }
-                            }
-                        },
-                        scales: {
-                            x: {
-                                beginAtZero: true,
-                                ticks: { precision: 0, font: { size: 10 } }
-                            },
-                            y: {
-                                ticks: { font: { size: 11, weight: '500' } }
-                            }
-                        }
-                    },
-                    // Plugin kustom untuk menggambar label jumlah angka di sebelah kanan ujung chart bar
                     plugins: [{
-                        id: 'rightValueLabels',
+                        id: 'umurTopValueLabels',
                         afterDatasetsDraw(chart) {
                             const { ctx } = chart;
                             chart.data.datasets.forEach((dataset, datasetIndex) => {
@@ -901,14 +1087,86 @@
                                 if (!meta.hidden) {
                                     meta.data.forEach((bar, index) => {
                                         const val = dataset.data[index];
-                                        if (val !== undefined && val !== null) {
+                                        if (val !== undefined && val !== null && val > 0) {
                                             ctx.save();
                                             ctx.font = 'bold 11px Inter, sans-serif';
-                                            ctx.fillStyle = '#1e293b'; // slate-800
-                                            ctx.textAlign = 'left';
-                                            ctx.textBaseline = 'middle';
-                                            // Tampilkan nilai angka di sebelah kanan ujung bar
-                                            ctx.fillText(val + ' Warga', bar.x + 8, bar.y);
+                                            ctx.fillStyle = '#4338ca';
+                                            ctx.textAlign = 'center';
+                                            ctx.textBaseline = 'bottom';
+                                            ctx.fillText(val + ' Warga', bar.x, bar.y - 3);
+                                            ctx.restore();
+                                        }
+                                    });
+                                }
+                            });
+                        }
+                    }]
+                });
+            }
+
+            // 4. GRAFIK BATANG KETERANGAN DATA WARGA DAN PEMILIH
+            if (ctxKeterangan && !chartKeteranganInstance) {
+                chartKeteranganInstance = new Chart(ctxKeterangan, {
+                    type: 'bar',
+                    data: {
+                        labels: [],
+                        datasets: [
+                            {
+                                label: 'Pemilih',
+                                data: [],
+                                backgroundColor: '#10b981',
+                                borderRadius: 4
+                            },
+                            {
+                                label: 'Bukan Pemilih',
+                                data: [],
+                                backgroundColor: '#f43f5e',
+                                borderRadius: 4
+                            }
+                        ]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        layout: {
+                            padding: { top: 25 }
+                        },
+                        plugins: {
+                            legend: { display: false },
+                            tooltip: {
+                                callbacks: {
+                                    label: function(context) {
+                                        return ` ${context.dataset.label}: ${context.parsed.y} Warga`;
+                                    }
+                                }
+                            }
+                        },
+                        scales: {
+                            x: {
+                                ticks: { font: { size: 10, weight: '600' }, maxRotation: 45 }
+                            },
+                            y: {
+                                beginAtZero: true,
+                                ticks: { precision: 0, font: { size: 10 } }
+                            }
+                        }
+                    },
+                    plugins: [{
+                        id: 'keteranganValueLabels',
+                        afterDatasetsDraw(chart) {
+                            const { ctx } = chart;
+                            chart.data.datasets.forEach((dataset, datasetIndex) => {
+                                const meta = chart.getDatasetMeta(datasetIndex);
+                                if (!meta.hidden) {
+                                    meta.data.forEach((bar, index) => {
+                                        const val = dataset.data[index];
+                                        if (val !== undefined && val !== null && val > 0) {
+                                            ctx.save();
+                                            ctx.font = 'bold 10px Inter, sans-serif';
+                                            ctx.fillStyle = datasetIndex === 0 ? '#047857' : '#be123c';
+                                            ctx.textAlign = 'center';
+                                            ctx.textBaseline = 'bottom';
+                                            ctx.fillText(`${val}`, bar.x, bar.y - 3);
                                             ctx.restore();
                                         }
                                     });
@@ -925,6 +1183,7 @@
                 initCharts();
             }
 
+            // Update Status Hak Pilih per RT
             const pemilihPerRt = new Array(36).fill(0);
             const bukanPerRt = new Array(36).fill(0);
             
@@ -941,6 +1200,8 @@
                 chartPemilihInstance.data.datasets[1].data = bukanPerRt;
                 chartPemilihInstance.update();
             }
+
+            // Update Gender
             if (chartGenderInstance) {
                 chartGenderInstance.data.datasets[0].data = [
                     data.filter(w => w.jk === 'L').length, 
@@ -948,6 +1209,8 @@
                 ];
                 chartGenderInstance.update();
             }
+
+            // Update Umur
             if (chartUmurInstance) {
                 chartUmurInstance.data.datasets[0].data = [
                     data.filter(w => (w.usia !== undefined ? w.usia : calculateAge(w.tanggalLahir)) < 17).length,
@@ -958,32 +1221,37 @@
                 chartUmurInstance.update();
             }
 
-            // Agregasi Data Keterangan
+            // Agregasi Grafik Batang Horizontal Keterangan Data Warga & Pemilih
             const ketMap = {};
+            
             data.forEach(w => {
                 let ket = (w.keterangan || '').trim();
                 if (!ket) {
                     ket = '(Tanpa Keterangan)';
                 }
-                ketMap[ket] = (ketMap[ket] || 0) + 1;
+                
+                if (!ketMap[ket]) {
+                    ketMap[ket] = { pemilih: 0, bukanPemilih: 0, total: 0 };
+                }
+
+                if (w.statusPemilih === 'Pemilih') {
+                    ketMap[ket].pemilih++;
+                } else {
+                    ketMap[ket].bukanPemilih++;
+                }
+                ketMap[ket].total++;
             });
 
-            // Urutkan keterangan dari jumlah terbanyak
-            const sortedKet = Object.entries(ketMap).sort((a, b) => b[1] - a[1]);
+            const sortedKet = Object.entries(ketMap).sort((a, b) => b[1].total - a[1].total);
+            
             const ketLabels = sortedKet.map(item => item[0]);
-            const ketCounts = sortedKet.map(item => item[1]);
-
-            // Warna warni variatif untuk tiap bar keterangan
-            const colorPalette = [
-                '#8b5cf6', '#10b981', '#f59e0b', '#ec4899', '#3b82f6',
-                '#06b6d4', '#f43f5e', '#84cc16', '#6366f1', '#64748b'
-            ];
-            const bgColors = ketLabels.map((_, i) => colorPalette[i % colorPalette.length]);
+            const pemilihCounts = sortedKet.map(item => item[1].pemilih);
+            const LabelCounts = sortedKet.map(item => item[1].bukanPemilih);
 
             if (chartKeteranganInstance) {
                 chartKeteranganInstance.data.labels = ketLabels.length > 0 ? ketLabels : ['(Tidak ada data)'];
-                chartKeteranganInstance.data.datasets[0].data = ketCounts.length > 0 ? ketCounts : [0];
-                chartKeteranganInstance.data.datasets[0].backgroundColor = bgColors;
+                chartKeteranganInstance.data.datasets[0].data = pemilihCounts.length > 0 ? pemilihCounts : [0];
+                chartKeteranganInstance.data.datasets[1].data = LabelCounts.length > 0 ? LabelCounts : [0];
                 chartKeteranganInstance.update();
             }
         }
@@ -1118,6 +1386,141 @@
             } catch (e) {
                 console.error("PDF Export Error:", e);
                 showToast('Gagal membuat file PDF.');
+            }
+        }
+
+        function exportRincianToPDF() {
+            try {
+                const jsPDFClass = window.jspdf ? window.jspdf.jsPDF : window.jsPDF;
+                if (!jsPDFClass) {
+                    showToast('Pustaka PDF belum siap. Silakan coba lagi.');
+                    return;
+                }
+                
+                const doc = new jsPDFClass({ orientation: 'landscape', unit: 'mm', format: 'a4' });
+                
+                const statusFilter = document.getElementById('rincian-filter-status')?.value || 'ALL';
+                const searchVal = document.getElementById('rincian-search')?.value.toLowerCase().trim() || '';
+
+                let statusText = "Semua Status Pemilih";
+                if (statusFilter === "Pemilih") statusText = "Khusus Pemilih";
+                if (statusFilter === "Bukan Pemilih") statusText = "Khusus Bukan Pemilih";
+
+                // Judul & Sub-judul Rata Tengah
+                doc.setFontSize(13);
+                doc.setFont("helvetica", "bold");
+                doc.text("TABEL RINCIAN KETERANGAN PEMILIH PER RT (RT 001 - RT 036)", 148.5, 12, { align: 'center' });
+                
+                doc.setFontSize(8);
+                doc.setFont("helvetica", "normal");
+                doc.text(`Filter Status: ${statusText}  |  Tanggal Unduh: ${new Date().toLocaleDateString('id-ID')}`, 148.5, 17, { align: 'center' });
+
+                const headRow = ["NO", "KETERANGAN"];
+                for (let i = 1; i <= 36; i++) {
+                    headRow.push(`RT${String(i).padStart(3, '0')}`);
+                }
+                headRow.push("TOTAL");
+
+                let sourceData = dataWarga;
+                if (statusFilter !== 'ALL') {
+                    sourceData = dataWarga.filter(w => w.statusPemilih === statusFilter);
+                }
+
+                const ketMap = {};
+                sourceData.forEach(w => {
+                    let ket = (w.keterangan || '').trim();
+                    if (!ket) ket = '(Tanpa Keterangan)';
+                    if (searchVal && !ket.toLowerCase().includes(searchVal)) return;
+
+                    if (!ketMap[ket]) {
+                        ketMap[ket] = new Array(37).fill(0);
+                    }
+
+                    const rtNum = parseInt(w.rt, 10);
+                    if (rtNum >= 1 && rtNum <= 36) {
+                        ketMap[ket][rtNum]++;
+                        ketMap[ket][0]++;
+                    }
+                });
+
+                const sortedKets = Object.keys(ketMap).sort((a, b) => ketMap[b][0] - ketMap[a][0]);
+                const colTotals = new Array(37).fill(0);
+                const bodyRows = [];
+
+                sortedKets.forEach((ket, idx) => {
+                    const rowData = ketMap[ket];
+                    colTotals[0] += rowData[0];
+
+                    const row = [idx + 1, ket];
+                    for (let rt = 1; rt <= 36; rt++) {
+                        const count = rowData[rt];
+                        colTotals[rt] += count;
+                        row.push(count > 0 ? String(count) : '-');
+                    }
+                    row.push(String(rowData[0]));
+                    bodyRows.push(row);
+                });
+
+                const footRow = ["", "TOTAL PER RT:"];
+                for (let rt = 1; rt <= 36; rt++) {
+                    footRow.push(colTotals[rt] > 0 ? String(colTotals[rt]) : '-');
+                }
+                footRow.push(String(colTotals[0]));
+
+                if (bodyRows.length === 0) {
+                    showToast('Tidak ada data rincian untuk diekspor!');
+                    return;
+                }
+
+                // Kalkulasi lebar kolom agar tepat memenuhi halaman dari margin kiri (8mm) ke margin kanan (289mm) -> Lebar area 281mm
+                // NO (8mm) + KETERANGAN (41mm) + 36 RT (36 x 6.0mm = 216mm) + TOTAL (16mm) = 281mm
+                const columnStyles = {
+                    0: { cellWidth: 8, halign: 'center' },
+                    1: { cellWidth: 41, halign: 'left' }
+                };
+                for (let i = 2; i <= 37; i++) {
+                    columnStyles[i] = { cellWidth: 6, halign: 'center' };
+                }
+                columnStyles[38] = { cellWidth: 16, halign: 'center', fontStyle: 'bold' };
+
+                doc.autoTable({
+                    head: [headRow],
+                    body: bodyRows,
+                    foot: [footRow],
+                    startY: 21,
+                    margin: { top: 21, left: 8, right: 8, bottom: 10 },
+                    styles: { 
+                        fontSize: 5.5, 
+                        cellPadding: 1.2, 
+                        lineColor: [0, 0, 0], 
+                        lineWidth: 0.15,
+                        textColor: [15, 23, 42]
+                    },
+                    headStyles: { 
+                        fillColor: [15, 23, 42], 
+                        textColor: [255, 255, 255], 
+                        fontStyle: 'bold', 
+                        halign: 'center',
+                        fontSize: 5.2,
+                        valign: 'middle'
+                    },
+                    footStyles: { 
+                        fillColor: [226, 232, 240], 
+                        textColor: [15, 23, 42], 
+                        fontStyle: 'bold', 
+                        halign: 'center',
+                        fontSize: 5.5,
+                        valign: 'middle'
+                    },
+                    columnStyles: columnStyles,
+                    theme: 'grid'
+                });
+
+                doc.save(`rincian_pemilih_rt_${new Date().toISOString().slice(0,10)}.pdf`);
+                showToast('PDF Rincian Pemilih berhasil diunduh!');
+            } catch (e) {
+                console.error("PDF Rincian Export Error:", e);
+                showToast('Gagal membuat file PDF Rincian.');
             }
         }
 
