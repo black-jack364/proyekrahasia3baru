@@ -243,7 +243,7 @@
                 <!-- VIEW 2: DATA WARGA & TABEL -->
                 <div id="view-table" class="space-y-6 hidden">
                     <div class="bg-white rounded-xl border border-slate-200 shadow-sm overflow-hidden flex flex-col">
-                        <div class="p-4 bg-slate-50 border-b border-slate-200 gap-3 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5">
+                        <div class="p-4 bg-slate-50 border-b border-slate-200 gap-3 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-6">
                             <div class="relative">
                                 <i class="fa-solid fa-magnifying-glass absolute left-3 top-3 text-slate-400 text-xs"></i>
                                 <input type="text" id="search-input" onkeyup="filterData()" placeholder="Cari Nama, NIK, No. KK..." 
@@ -254,6 +254,11 @@
                                     <option value="ALL">-- Semua Status Pemilih --</option>
                                     <option value="Pemilih">Pemilih</option>
                                     <option value="Bukan Pemilih">Bukan Pemilih</option>
+                                </select>
+                            </div>
+                            <div>
+                                <select id="filter-keterangan" onchange="filterData()" class="w-full py-2 px-3 text-xs bg-white border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500">
+                                    <option value="ALL">-- Semua Keterangan --</option>
                                 </select>
                             </div>
                             <div>
@@ -676,6 +681,7 @@
                 .then(res => {
                     if (res.status === "success" && res.data) {
                         dataWarga = res.data;
+                        populateKeteranganOptions();
                         filterData();
                         showToast("Data berhasil disinkronkan dari Sheet!");
                     } else {
@@ -688,9 +694,35 @@
                 });
         }
 
+        function populateKeteranganOptions() {
+            const filterKeteranganSelect = document.getElementById('filter-keterangan');
+            if (!filterKeteranganSelect) return;
+
+            const uniqueKeterangan = [...new Set(dataWarga.map(item => (item.keterangan || '').trim()))]
+                .filter(Boolean)
+                .sort();
+
+            let optionsHtml = `<option value="ALL">-- Semua Keterangan --</option>`;
+            uniqueKeterangan.forEach(ket => {
+                optionsHtml += `<option value="${escapeHtml(ket)}">${escapeHtml(ket)}</option>`;
+            });
+            // Option for empty keterangan
+            optionsHtml += `<option value="EMPTY">(Tanpa Keterangan)</option>`;
+            
+            // Maintain current selection if it still exists
+            const currentSelection = filterKeteranganSelect.value;
+            filterKeteranganSelect.innerHTML = optionsHtml;
+            if(uniqueKeterangan.includes(currentSelection) || currentSelection === "EMPTY" || currentSelection === "ALL") {
+                filterKeteranganSelect.value = currentSelection;
+            } else {
+                filterKeteranganSelect.value = "ALL";
+            }
+        }
+
         function filterData() {
             const searchVal = document.getElementById('search-input')?.value.toLowerCase().trim() || '';
             const statusVal = document.getElementById('filter-status')?.value || 'ALL';
+            const keteranganVal = document.getElementById('filter-keterangan')?.value || 'ALL';
             const rtVal = document.getElementById('filter-rt')?.value || 'ALL';
             const tpsVal = document.getElementById('filter-tps')?.value || 'ALL';
 
@@ -698,10 +730,21 @@
                 const nama = (item.nama || '').toLowerCase();
                 const nik = String(item.nik || '');
                 const kk = String(item.kk || '');
-                const ket = (item.keterangan || '').toLowerCase();
+                const ket = (item.keterangan || '').trim();
+                const ketLower = ket.toLowerCase();
                 
-                const matchSearch = nama.includes(searchVal) || nik.includes(searchVal) || kk.includes(searchVal) || ket.includes(searchVal);
+                const matchSearch = nama.includes(searchVal) || nik.includes(searchVal) || kk.includes(searchVal) || ketLower.includes(searchVal);
                 const matchStatus = statusVal === 'ALL' || item.statusPemilih === statusVal;
+                
+                let matchKeterangan = true;
+                if (keteranganVal !== 'ALL') {
+                    if (keteranganVal === 'EMPTY') {
+                        matchKeterangan = ket === '';
+                    } else {
+                        // case-insensitive match just in case
+                        matchKeterangan = ket.toLowerCase() === keteranganVal.toLowerCase();
+                    }
+                }
                 
                 const itemRt = item.rt ? String(item.rt).padStart(3, '0') : '';
                 const matchRt = rtVal === 'ALL' || itemRt === rtVal;
@@ -710,7 +753,7 @@
                 const filterTps = tpsVal === 'ALL' ? 'ALL' : String(tpsVal).padStart(2, '0');
                 const matchTps = tpsVal === 'ALL' || itemTps === filterTps || item.tps === tpsVal;
 
-                return matchSearch && matchStatus && matchRt && matchTps;
+                return matchSearch && matchStatus && matchKeterangan && matchRt && matchTps;
             });
 
             filteredData.sort((a, b) => String(a.kk || '').localeCompare(String(b.kk || '')));
@@ -721,6 +764,7 @@
         function resetFilters() {
             if (document.getElementById('search-input')) document.getElementById('search-input').value = '';
             if (document.getElementById('filter-status')) document.getElementById('filter-status').value = 'ALL';
+            if (document.getElementById('filter-keterangan')) document.getElementById('filter-keterangan').value = 'ALL';
             if (document.getElementById('filter-rt')) document.getElementById('filter-rt').value = 'ALL';
             if (document.getElementById('filter-tps')) document.getElementById('filter-tps').value = 'ALL';
             filterData();
@@ -912,6 +956,7 @@
             dataWarga = dataWarga.filter(w => String(w.id) !== String(deleteTargetId));
             closeDeleteModal();
 
+            populateKeteranganOptions();
             filterData();
             showToast(`Data <strong>${escapeHtml(targetName)}</strong> berhasil dihapus.`);
 
@@ -944,6 +989,7 @@
             if (!warga) return;
 
             warga.keterangan = newKeterangan;
+            populateKeteranganOptions();
             renderDashboard();
             showToast(`Keterangan <strong>${escapeHtml(warga.nama)}</strong> diperbarui`);
 
@@ -1311,6 +1357,7 @@
 
             dataWarga.push(newWarga);
             closeAddWargaModal();
+            populateKeteranganOptions();
             filterData();
             showToast(`Warga <strong>${escapeHtml(newWarga.nama)}</strong> berhasil ditambahkan!`);
 
@@ -1322,6 +1369,7 @@
             }
         }
 
+        // MODIFIKASI: Kolom "NO. KK" dan "NIK" dihilangkan dari cetakan PDF ini untuk menjaga kerahasiaan
         function exportDataToPDF() {
             if (filteredData.length === 0) { 
                 showToast('Tidak ada data untuk diekspor!'); 
@@ -1342,7 +1390,7 @@
                 
                 doc.setFontSize(9);
                 doc.setFont("helvetica", "normal");
-                doc.text(`Tanggal Unduh: ${new Date().toLocaleDateString('id-ID')} | Total: ${filteredData.length} Data`, 14, 21);
+                doc.text(`Tanggal Unduh: ${new Date().toLocaleDateString('id-ID')} | Total: ${filteredData.length} Data (NIK & NKK disembunyikan)`, 14, 21);
 
                 const newGroupRowIndexes = [];
                 let lastKK = null;
@@ -1353,12 +1401,11 @@
                     lastKK = item.kk;
                 });
 
+                // NO KK dan NIK dihapus dari Array head & body agar tidak muncul di file unduhan PDF.
                 doc.autoTable({
-                    head: [["NO", "NO. KK", "NIK", "NAMA LENGKAP", "TEMPAT LAHIR", "TGL LAHIR", "UMUR", "JK", "RT", "TPS", "STATUS", "KETERANGAN"]],
+                    head: [["NO", "NAMA LENGKAP", "TEMPAT LAHIR", "TGL LAHIR", "UMUR", "JK", "RT", "TPS", "STATUS", "KETERANGAN"]],
                     body: filteredData.map((item, idx) => [
                         idx + 1, 
-                        item.kk || '-', 
-                        item.nik || '-', 
                         item.nama || '-', 
                         item.tempatLahir || '-', 
                         formatDateIndo(item.tanggalLahir), 
