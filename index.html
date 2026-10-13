@@ -64,7 +64,7 @@
                     <i class="fa-solid fa-arrow-right text-xs"></i>
                 </button>
             </form>
-            <p class="text-[11px] text-slate-400 mt-6">Sistem Informasi Data Pemilih RT 001 - 036</p>
+            <p class="text-[11px] text-slate-400 mt-6">Sistem Informasi Data Pemilih RT 001 - 036 (TPS 1 & TPS 2)</p>
         </div>
     </div>
 
@@ -82,7 +82,7 @@
                     </div>
                     <div class="truncate">
                         <h1 class="font-bold text-base tracking-wide text-white leading-tight truncate">Data Pemilih</h1>
-                        <p class="text-xs text-indigo-400 font-medium truncate">RT 001 - 036</p>
+                        <p class="text-xs text-indigo-400 font-medium truncate">TPS 1 & TPS 2 (36 RT)</p>
                     </div>
                 </div>
                 <button onclick="toggleSidebar()" class="md:hidden text-slate-400 hover:text-white p-1">
@@ -101,19 +101,11 @@
                 </button>
                 <button id="nav-rincian" onclick="switchView('rincian')" class="w-full flex items-center space-x-3 px-3 py-2.5 rounded-lg text-slate-300 hover:bg-slate-800 hover:text-white font-medium text-sm transition">
                     <i class="fa-solid fa-clipboard-list w-5 text-center text-amber-400"></i>
-                    <span>Rincian Pemilih</span>
+                    <span>Rincian Pemilih TPS</span>
                 </button>
                 <button onclick="openAddWargaModal()" class="w-full flex items-center space-x-3 px-3 py-2.5 rounded-lg text-slate-300 hover:bg-slate-800 hover:text-white font-medium text-sm transition">
                     <i class="fa-solid fa-user-plus w-5 text-center text-emerald-400"></i>
                     <span>Tambah Data Warga</span>
-                </button>
-                <button onclick="exportDataToPDF()" class="w-full flex items-center space-x-3 px-3 py-2.5 rounded-lg text-slate-300 hover:bg-slate-800 hover:text-white font-medium text-sm transition">
-                    <i class="fa-solid fa-file-pdf w-5 text-center text-rose-400"></i>
-                    <span>Ekspor Data Warga (PDF)</span>
-                </button>
-                <button onclick="exportRincianToPDF()" class="w-full flex items-center space-x-3 px-3 py-2.5 rounded-lg text-slate-300 hover:bg-slate-800 hover:text-white font-medium text-sm transition">
-                    <i class="fa-solid fa-file-arrow-down w-5 text-center text-amber-400"></i>
-                    <span>Ekspor Rincian (PDF)</span>
                 </button>
             </nav>
 
@@ -133,7 +125,7 @@
                         <i class="fa-solid fa-bars text-lg"></i>
                     </button>
                     <div>
-                        <h2 id="header-title" class="text-lg font-bold text-slate-800">Grafik & Statistik Pendataan Warga</h2>
+                        <h2 id="header-title" class="text-lg font-bold text-slate-800">Grafik & Statistik Pendataan Warga (TPS 1 & TPS 2)</h2>
                     </div>
                 </div>
 
@@ -196,11 +188,11 @@
                     </div>
 
                     <div class="space-y-6">
-                        <!-- Chart: Status Hak Pilih per RT -->
+                        <!-- Chart: Status Hak Pilih per TPS -->
                         <div class="bg-white p-4 sm:p-5 rounded-xl border border-slate-200 shadow-sm">
                             <h4 class="text-sm font-bold text-slate-800 mb-3 flex items-center justify-between">
-                                <span class="flex items-center"><i class="fa-solid fa-chart-column text-indigo-500 mr-2"></i> Status Hak Pilih per RT (RT 001 - RT 036)</span>
-                                <span class="text-xs text-slate-500 font-normal">36 RT</span>
+                                <span class="flex items-center"><i class="fa-solid fa-chart-column text-indigo-500 mr-2"></i> Status Hak Pilih per TPS (TPS 1 & TPS 2)</span>
+                                <span class="text-xs text-slate-500 font-normal">2 TPS</span>
                             </h4>
                             <div class="h-64 sm:h-72 relative"><canvas id="chartPemilih"></canvas></div>
                         </div>
@@ -243,7 +235,7 @@
                 <!-- VIEW 2: DATA WARGA & TABEL -->
                 <div id="view-table" class="space-y-6 hidden">
                     <div class="bg-white rounded-xl border border-slate-200 shadow-sm overflow-hidden flex flex-col">
-                        <div class="p-4 bg-slate-50 border-b border-slate-200 gap-3 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-6">
+                        <div class="p-4 bg-slate-50 border-b border-slate-200 gap-3 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-6 items-center">
                             <div class="relative">
                                 <i class="fa-solid fa-magnifying-glass absolute left-3 top-3 text-slate-400 text-xs"></i>
                                 <input type="text" id="search-input" onkeyup="filterData()" placeholder="Cari Nama, NIK, No. KK..." 
@@ -268,14 +260,17 @@
                             </div>
                             <div>
                                 <select id="filter-tps" onchange="filterData()" class="w-full py-2 px-3 text-xs bg-white border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500">
-                                    <option value="ALL">-- Semua TPS --</option>
-                                    <option value="01">TPS 01</option>
-                                    <option value="02">TPS 02</option>
+                                    <option value="ALL">-- Semua TPS (TPS 1 & 2) --</option>
+                                    <option value="1">TPS 1</option>
+                                    <option value="2">TPS 2</option>
                                 </select>
                             </div>
-                            <div>
-                                <button onclick="resetFilters()" class="w-full py-2 px-3 bg-slate-200 hover:bg-slate-300 text-slate-700 text-xs font-semibold rounded-lg transition flex items-center justify-center space-x-1">
-                                    <i class="fa-solid fa-rotate-left"></i><span>Reset Filter</span>
+                            <div class="flex items-center space-x-2">
+                                <button onclick="resetFilters()" class="flex-1 py-2 px-3 bg-slate-200 hover:bg-slate-300 text-slate-700 text-xs font-semibold rounded-lg transition flex items-center justify-center space-x-1">
+                                    <i class="fa-solid fa-rotate-left"></i><span>Reset</span>
+                                </button>
+                                <button onclick="exportDataToPDF()" class="flex-1 py-2 px-3 bg-rose-600 hover:bg-rose-700 text-white text-xs font-semibold rounded-lg transition flex items-center justify-center space-x-1 shadow-sm" title="Ekspor Data Warga (PDF)">
+                                    <i class="fa-solid fa-file-pdf"></i><span>PDF</span>
                                 </button>
                             </div>
                         </div>
@@ -320,16 +315,17 @@
                     </div>
                 </div>
 
-                <!-- VIEW 3: RINCIAN PEMILIH (TABEL KETERANGAN PER RT DENGAN GARIS HITAM) -->
+                <!-- VIEW 3: RINCIAN PEMILIH TPS & TABEL TIAP RT DIBAWAHNYA -->
                 <div id="view-rincian" class="space-y-6 hidden">
+                    <!-- EXISTING GLOBAL TPS BREAKDOWN -->
                     <div class="bg-white rounded-xl border border-slate-200 shadow-sm overflow-hidden flex flex-col">
                         <div class="p-4 bg-slate-50 border-b border-slate-200 flex flex-col sm:flex-row items-center justify-between gap-3">
                             <div>
                                 <h3 class="font-bold text-slate-800 text-sm flex items-center">
                                     <i class="fa-solid fa-clipboard-list text-amber-500 mr-2"></i>
-                                    Tabel Rincian Keterangan Pemilih per RT (RT 001 - RT 036)
+                                    Tabel Rincian Keterangan Pemilih per TPS (TPS 1 & TPS 2)
                                 </h3>
-                                <p class="text-xs text-slate-500 mt-0.5">Rekapitulasi jumlah warga berdasarkan kategori Keterangan di masing-masing RT.</p>
+                                <p class="text-xs text-slate-500 mt-0.5">Rekapitulasi jumlah warga berdasarkan kategori Keterangan di TPS 1 dan TPS 2.</p>
                             </div>
                             <div class="flex flex-wrap items-center space-x-2 w-full sm:w-auto">
                                 <select id="rincian-filter-status" onchange="renderRincianPemilih()" class="py-2 px-3 text-xs bg-white border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500">
@@ -340,12 +336,12 @@
                                 <input type="text" id="rincian-search" onkeyup="renderRincianPemilih()" placeholder="Cari Keterangan..." class="py-2 px-3 text-xs bg-white border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500">
                                 <button onclick="exportRincianToPDF()" class="py-2 px-3 bg-rose-600 hover:bg-rose-700 active:scale-95 text-white text-xs font-semibold rounded-lg transition flex items-center space-x-1.5 shadow-sm">
                                     <i class="fa-solid fa-file-pdf"></i>
-                                    <span>Download PDF (Landscape)</span>
+                                    <span>Download PDF (TPS)</span>
                                 </button>
                             </div>
                         </div>
 
-                        <div class="overflow-x-auto min-h-[350px] relative p-1">
+                        <div class="overflow-x-auto min-h-[300px] relative p-1">
                             <table class="w-full text-xs text-left text-slate-700 border-collapse border border-black">
                                 <thead class="bg-slate-900 text-white uppercase font-bold text-[11px] tracking-wider sticky top-0 z-10">
                                     <tr id="rincian-table-header"></tr>
@@ -353,6 +349,30 @@
                                 <tbody id="rincian-table-body"></tbody>
                                 <tfoot id="rincian-table-footer" class="bg-slate-100 font-bold border-t-2 border-black text-slate-900"></tfoot>
                             </table>
+                        </div>
+                    </div>
+
+                    <!-- NEW SECTION: RINCIAN TPS PER 36 RT -->
+                    <div class="bg-white rounded-xl border border-slate-200 shadow-sm p-4 sm:p-6 space-y-4">
+                        <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-3 border-b border-slate-200">
+                            <div>
+                                <h3 class="font-bold text-slate-800 text-sm sm:text-base flex items-center">
+                                    <i class="fa-solid fa-map-location-dot text-indigo-600 mr-2"></i>
+                                    Rincian Detail Keterangan & Pemilih per TPS di Setiap RT (RT 001 s.d. RT 036)
+                                </h3>
+                                <p class="text-xs text-slate-500 mt-0.5">Daftar tabel rincian TPS 1 & TPS 2 yang terbagi ke dalam 36 RT di wilayah pendataan.</p>
+                            </div>
+                            <div class="flex items-center space-x-2">
+                                <select id="rt-detail-filter" onchange="renderRtDetailTables()" class="py-2 px-3 text-xs bg-white border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500 font-semibold text-slate-700">
+                                    <option value="ALL">-- Tampilkan Semua 36 RT --</option>
+                                    <!-- Populated dynamically -->
+                                </select>
+                            </div>
+                        </div>
+
+                        <!-- Container holding all 36 RT tables -->
+                        <div id="rt-tables-container" class="space-y-6 pt-2">
+                            <!-- Injected dynamically via JS -->
                         </div>
                     </div>
                 </div>
@@ -405,8 +425,8 @@
                     <div>
                         <label class="block font-semibold text-slate-700 mb-1">TPS</label>
                         <select id="add-tps" class="w-full px-3 py-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-indigo-500">
-                            <option value="01">TPS 01</option>
-                            <option value="02">TPS 02</option>
+                            <option value="1">TPS 1</option>
+                            <option value="2">TPS 2</option>
                         </select>
                     </div>
                 </div>
@@ -555,6 +575,8 @@
         function populateRtOptions() {
             const filterRtSelect = document.getElementById('filter-rt');
             const addRtSelect = document.getElementById('add-rt');
+            const rtDetailFilter = document.getElementById('rt-detail-filter');
+
             let optionsHtml = '';
             for (let i = 1; i <= 36; i++) {
                 const rtNum = String(i).padStart(3, '0');
@@ -562,6 +584,7 @@
             }
             if (filterRtSelect) filterRtSelect.innerHTML = `<option value="ALL">-- Semua RT (36 RT) --</option>` + optionsHtml;
             if (addRtSelect) addRtSelect.innerHTML = optionsHtml;
+            if (rtDetailFilter) rtDetailFilter.innerHTML = `<option value="ALL">-- Tampilkan Semua 36 RT --</option>` + optionsHtml;
         }
 
         function switchView(view) {
@@ -587,7 +610,7 @@
                 viewRincian?.classList.add('hidden');
                 navChart?.classList.add('bg-indigo-600', 'text-white');
                 navChart?.classList.remove('text-slate-300', 'hover:bg-slate-800');
-                if (headerTitle) headerTitle.innerText = "Grafik & Statistik Pendataan Warga";
+                if (headerTitle) headerTitle.innerText = "Grafik & Statistik Pendataan Warga (TPS 1 & TPS 2)";
                 setTimeout(() => {
                     if (chartPemilihInstance) chartPemilihInstance.resize();
                     if (chartGenderInstance) chartGenderInstance.resize();
@@ -600,15 +623,16 @@
                 viewRincian?.classList.add('hidden');
                 navTable?.classList.add('bg-indigo-600', 'text-white');
                 navTable?.classList.remove('text-slate-300', 'hover:bg-slate-800');
-                if (headerTitle) headerTitle.innerText = "Daftar Pemilih & Data Warga";
+                if (headerTitle) headerTitle.innerText = "Daftar Pemilih & Data Warga (TPS 1 & TPS 2)";
             } else if (view === 'rincian') {
                 viewChart?.classList.add('hidden');
                 viewTable?.classList.add('hidden');
                 viewRincian?.classList.remove('hidden');
                 navRincian?.classList.add('bg-indigo-600', 'text-white');
                 navRincian?.classList.remove('text-slate-300', 'hover:bg-slate-800');
-                if (headerTitle) headerTitle.innerText = "Rincian Data Pemilih & Keterangan per RT";
+                if (headerTitle) headerTitle.innerText = "Rincian Data Pemilih & Keterangan per TPS & per RT";
                 renderRincianPemilih();
+                renderRtDetailTables();
             }
         }
 
@@ -706,10 +730,8 @@
             uniqueKeterangan.forEach(ket => {
                 optionsHtml += `<option value="${escapeHtml(ket)}">${escapeHtml(ket)}</option>`;
             });
-            // Option for empty keterangan
             optionsHtml += `<option value="EMPTY">(Tanpa Keterangan)</option>`;
             
-            // Maintain current selection if it still exists
             const currentSelection = filterKeteranganSelect.value;
             filterKeteranganSelect.innerHTML = optionsHtml;
             if(uniqueKeterangan.includes(currentSelection) || currentSelection === "EMPTY" || currentSelection === "ALL") {
@@ -741,7 +763,6 @@
                     if (keteranganVal === 'EMPTY') {
                         matchKeterangan = ket === '';
                     } else {
-                        // case-insensitive match just in case
                         matchKeterangan = ket.toLowerCase() === keteranganVal.toLowerCase();
                     }
                 }
@@ -749,9 +770,8 @@
                 const itemRt = item.rt ? String(item.rt).padStart(3, '0') : '';
                 const matchRt = rtVal === 'ALL' || itemRt === rtVal;
                 
-                const itemTps = item.tps ? String(item.tps).padStart(2, '0') : '';
-                const filterTps = tpsVal === 'ALL' ? 'ALL' : String(tpsVal).padStart(2, '0');
-                const matchTps = tpsVal === 'ALL' || itemTps === filterTps || item.tps === tpsVal;
+                const itemTps = String(item.tps || '').replace(/[^0-9]/g, '');
+                const matchTps = tpsVal === 'ALL' || itemTps === tpsVal || String(item.tps) === tpsVal;
 
                 return matchSearch && matchStatus && matchKeterangan && matchRt && matchTps;
             });
@@ -776,6 +796,7 @@
             updateCharts(filteredData);
             if (activeView === 'rincian') {
                 renderRincianPemilih();
+                renderRtDetailTables();
             }
         }
 
@@ -802,52 +823,52 @@
                 if (searchVal && !ket.toLowerCase().includes(searchVal)) return;
 
                 if (!ketMap[ket]) {
-                    ketMap[ket] = new Array(37).fill(0);
+                    ketMap[ket] = [0, 0, 0]; // [Total, TPS 1, TPS 2]
                 }
 
-                const rtNum = parseInt(w.rt, 10);
-                if (rtNum >= 1 && rtNum <= 36) {
-                    ketMap[ket][rtNum]++;
+                const tpsNum = parseInt(String(w.tps || '').replace(/[^0-9]/g, ''), 10);
+                if (tpsNum === 1 || tpsNum === 2) {
+                    ketMap[ket][tpsNum]++;
+                    ketMap[ket][0]++;
+                } else {
+                    ketMap[ket][1]++;
                     ketMap[ket][0]++;
                 }
             });
 
-            // Judul Kolom Tabel dengan Garis Hitam
-            let headerHtml = `<th class="px-3 py-3 text-center sticky left-0 z-20 bg-slate-900 text-white border border-black shadow-md w-10">NO</th>`;
-            headerHtml += `<th class="px-4 py-3 text-left sticky left-10 z-20 bg-slate-900 text-white border border-black shadow-md min-w-[180px]">KETERANGAN</th>`;
-            for (let i = 1; i <= 36; i++) {
-                headerHtml += `<th class="px-2 py-3 text-center border border-black min-w-[55px]">RT ${String(i).padStart(3, '0')}</th>`;
-            }
-            headerHtml += `<th class="px-4 py-3 text-center border border-black bg-indigo-950 text-indigo-200 min-w-[80px]">TOTAL</th>`;
+            let headerHtml = `<th class="px-3 py-3 text-center sticky left-0 z-20 bg-slate-900 text-white border border-black shadow-md w-12">NO</th>`;
+            headerHtml += `<th class="px-4 py-3 text-left sticky left-12 z-20 bg-slate-900 text-white border border-black shadow-md min-w-[220px]">KETERANGAN</th>`;
+            headerHtml += `<th class="px-4 py-3 text-center border border-black min-w-[100px] bg-indigo-900 text-white">TPS 1</th>`;
+            headerHtml += `<th class="px-4 py-3 text-center border border-black min-w-[100px] bg-indigo-900 text-white">TPS 2</th>`;
+            headerHtml += `<th class="px-4 py-3 text-center border border-black bg-indigo-950 text-indigo-200 min-w-[100px]">TOTAL</th>`;
             headerEl.innerHTML = headerHtml;
 
             const sortedKets = Object.keys(ketMap).sort((a, b) => ketMap[b][0] - ketMap[a][0]);
 
             if (sortedKets.length === 0) {
-                bodyEl.innerHTML = `<tr><td colspan="39" class="px-6 py-10 text-center text-slate-500 border border-black">Tidak ada data rincian keterangan yang sesuai.</td></tr>`;
+                bodyEl.innerHTML = `<tr><td colspan="5" class="px-6 py-10 text-center text-slate-500 border border-black">Tidak ada data rincian keterangan yang sesuai.</td></tr>`;
                 footerEl.innerHTML = '';
                 return;
             }
 
-            const colTotals = new Array(37).fill(0);
+            const colTotals = [0, 0, 0];
             let bodyHtml = '';
 
             sortedKets.forEach((ket, idx) => {
                 const rowData = ketMap[ket];
                 colTotals[0] += rowData[0];
+                colTotals[1] += rowData[1];
+                colTotals[2] += rowData[2];
 
                 bodyHtml += `<tr class="hover:bg-slate-100 transition">`;
                 bodyHtml += `<td class="px-3 py-2.5 text-center font-semibold text-slate-800 sticky left-0 bg-white z-10 border border-black">${idx + 1}</td>`;
-                bodyHtml += `<td class="px-4 py-2.5 font-semibold text-slate-900 sticky left-10 bg-white z-10 border border-black truncate">${escapeHtml(ket)}</td>`;
+                bodyHtml += `<td class="px-4 py-2.5 font-semibold text-slate-900 sticky left-12 bg-white z-10 border border-black truncate">${escapeHtml(ket)}</td>`;
 
-                for (let rt = 1; rt <= 36; rt++) {
-                    const count = rowData[rt];
-                    colTotals[rt] += count;
-                    const badge = count > 0 
-                        ? `<span class="px-1.5 py-0.5 rounded text-xs font-bold bg-amber-100 text-amber-900">${count}</span>` 
-                        : `<span class="text-slate-400">-</span>`;
-                    bodyHtml += `<td class="px-2 py-2.5 text-center border border-black">${badge}</td>`;
-                }
+                const count1 = rowData[1];
+                bodyHtml += `<td class="px-4 py-2.5 text-center border border-black">${count1 > 0 ? `<span class="px-2 py-0.5 rounded text-xs font-bold bg-amber-100 text-amber-900">${count1}</span>` : `<span class="text-slate-400">-</span>`}</td>`;
+
+                const count2 = rowData[2];
+                bodyHtml += `<td class="px-4 py-2.5 text-center border border-black">${count2 > 0 ? `<span class="px-2 py-0.5 rounded text-xs font-bold bg-amber-100 text-amber-900">${count2}</span>` : `<span class="text-slate-400">-</span>`}</td>`;
 
                 bodyHtml += `<td class="px-4 py-2.5 text-center font-bold text-indigo-900 bg-indigo-50 border border-black">${rowData[0]}</td>`;
                 bodyHtml += `</tr>`;
@@ -855,16 +876,133 @@
 
             bodyEl.innerHTML = bodyHtml;
 
-            // Baris Total per RT (Footer dengan Garis Hitam)
             let footerHtml = `<tr>`;
-            footerHtml += `<td colspan="2" class="px-4 py-3 text-right font-extrabold uppercase sticky left-0 z-10 bg-slate-200 text-slate-900 border border-black">TOTAL PER RT:</td>`;
-            for (let rt = 1; rt <= 36; rt++) {
-                footerHtml += `<td class="px-2 py-3 text-center font-bold border border-black text-slate-900">${colTotals[rt] > 0 ? colTotals[rt] : '-'}</td>`;
-            }
+            footerHtml += `<td colspan="2" class="px-4 py-3 text-right font-extrabold uppercase sticky left-0 z-10 bg-slate-200 text-slate-900 border border-black">TOTAL KESELURUHAN:</td>`;
+            footerHtml += `<td class="px-4 py-3 text-center font-bold border border-black text-slate-900 bg-indigo-50">${colTotals[1] > 0 ? colTotals[1] : '-'}</td>`;
+            footerHtml += `<td class="px-4 py-3 text-center font-bold border border-black text-slate-900 bg-indigo-50">${colTotals[2] > 0 ? colTotals[2] : '-'}</td>`;
             footerHtml += `<td class="px-4 py-3 text-center font-extrabold text-sm text-indigo-950 bg-indigo-100 border border-black">${colTotals[0]}</td>`;
             footerHtml += `</tr>`;
 
             footerEl.innerHTML = footerHtml;
+        }
+
+        // RENDER 36 RT DETAIL TABLES
+        function renderRtDetailTables() {
+            const container = document.getElementById('rt-tables-container');
+            const rtFilterVal = document.getElementById('rt-detail-filter')?.value || 'ALL';
+            if (!container) return;
+
+            let htmlContent = '';
+            
+            // Loop from RT 001 to RT 036
+            for (let i = 1; i <= 36; i++) {
+                const rtNumStr = String(i).padStart(3, '0');
+                
+                if (rtFilterVal !== 'ALL' && rtFilterVal !== rtNumStr) {
+                    continue;
+                }
+
+                // Filter data for current RT
+                const rtWarga = dataWarga.filter(w => {
+                    const itemRt = w.rt ? String(w.rt).padStart(3, '0') : '';
+                    return itemRt === rtNumStr;
+                });
+
+                // Group by keterangan and TPS for this RT
+                const rtKetMap = {};
+                rtWarga.forEach(w => {
+                    let ket = (w.keterangan || '').trim();
+                    if (!ket) ket = '(Tanpa Keterangan)';
+
+                    if (!rtKetMap[ket]) {
+                        rtKetMap[ket] = [0, 0, 0]; // [Total, TPS 1, TPS 2]
+                    }
+
+                    const tpsNum = parseInt(String(w.tps || '').replace(/[^0-9]/g, ''), 10);
+                    if (tpsNum === 1 || tpsNum === 2) {
+                        rtKetMap[ket][tpsNum]++;
+                        rtKetMap[ket][0]++;
+                    } else {
+                        rtKetMap[ket][1]++;
+                        rtKetMap[ket][0]++;
+                    }
+                });
+
+                const sortedKets = Object.keys(rtKetMap).sort((a, b) => rtKetMap[b][0] - rtKetMap[a][0]);
+                const totalRtWarga = rtWarga.length;
+                const totalRtPemilih = rtWarga.filter(w => w.statusPemilih === 'Pemilih').length;
+                const totalRtBukan = rtWarga.filter(w => w.statusPemilih === 'Bukan Pemilih').length;
+
+                htmlContent += `
+                    <div class="bg-slate-50 border border-slate-300 rounded-xl p-4 sm:p-5 shadow-sm space-y-3">
+                        <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2 border-b border-slate-200 pb-2">
+                            <div>
+                                <h4 class="font-bold text-slate-900 text-sm sm:text-base flex items-center">
+                                    <span class="w-7 h-7 rounded-lg bg-indigo-600 text-white flex items-center justify-center mr-2 text-xs font-extrabold shadow-sm">${i}</span>
+                                    RT ${rtNumStr}
+                                </h4>
+                                <p class="text-[11px] text-slate-500">Total Warga: <strong class="text-slate-700">${totalRtWarga}</strong> | Pemilih: <strong class="text-emerald-700">${totalRtPemilih}</strong> | Bukan Pemilih: <strong class="text-rose-700">${totalRtBukan}</strong></p>
+                            </div>
+                            <span class="text-xs font-semibold px-2.5 py-1 bg-white border border-slate-300 rounded-lg text-slate-600">
+                                TPS 1 & TPS 2
+                            </span>
+                        </div>
+
+                        <div class="overflow-x-auto relative">
+                            <table class="w-full text-xs text-left text-slate-700 border-collapse border border-black">
+                                <thead class="bg-slate-900 text-white uppercase font-bold text-[11px] tracking-wider">
+                                    <tr>
+                                        <th class="px-3 py-2.5 text-center border border-black w-12">NO</th>
+                                        <th class="px-4 py-2.5 text-left border border-black min-w-[200px]">KETERANGAN</th>
+                                        <th class="px-4 py-2.5 text-center border border-black min-w-[90px] bg-indigo-900 text-white">TPS 1</th>
+                                        <th class="px-4 py-2.5 text-center border border-black min-w-[90px] bg-indigo-900 text-white">TPS 2</th>
+                                        <th class="px-4 py-2.5 text-center border border-black min-w-[90px] bg-indigo-950 text-indigo-200">TOTAL RT</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                `;
+
+                if (sortedKets.length === 0) {
+                    htmlContent += `<tr><td colspan="5" class="px-4 py-6 text-center text-slate-400 border border-black italic">Belum ada data warga terdaftar di RT ${rtNumStr}.</td></tr>`;
+                } else {
+                    const rtColTotals = [0, 0, 0];
+                    sortedKets.forEach((ket, idx) => {
+                        const rowData = rtKetMap[ket];
+                        rtColTotals[0] += rowData[0];
+                        rtColTotals[1] += rowData[1];
+                        rtColTotals[2] += rowData[2];
+
+                        htmlContent += `
+                            <tr class="bg-white hover:bg-slate-100 transition">
+                                <td class="px-3 py-2 text-center font-semibold text-slate-800 border border-black">${idx + 1}</td>
+                                <td class="px-4 py-2 font-semibold text-slate-900 border border-black truncate">${escapeHtml(ket)}</td>
+                                <td class="px-4 py-2 text-center border border-black">${rowData[1] > 0 ? `<span class="px-2 py-0.5 rounded text-[11px] font-bold bg-amber-100 text-amber-900">${rowData[1]}</span>` : `<span class="text-slate-400">-</span>`}</td>
+                                <td class="px-4 py-2 text-center border border-black">${rowData[2] > 0 ? `<span class="px-2 py-0.5 rounded text-[11px] font-bold bg-amber-100 text-amber-900">${rowData[2]}</span>` : `<span class="text-slate-400">-</span>`}</td>
+                                <td class="px-4 py-2 text-center font-bold text-indigo-950 bg-indigo-50/70 border border-black">${rowData[0]}</td>
+                            </tr>
+                        `;
+                    });
+
+                    // Footer Total for this RT Table
+                    htmlContent += `
+                        <tr class="bg-slate-200 font-bold border-t-2 border-black text-slate-900">
+                            <td colspan="2" class="px-4 py-2 text-right uppercase border border-black">TOTAL RT ${rtNumStr}:</td>
+                            <td class="px-4 py-2 text-center border border-black bg-indigo-100/50">${rtColTotals[1] > 0 ? rtColTotals[1] : '-'}</td>
+                            <td class="px-4 py-2 text-center border border-black bg-indigo-100/50">${rtColTotals[2] > 0 ? rtColTotals[2] : '-'}</td>
+                            <td class="px-4 py-2 text-center font-extrabold text-indigo-950 bg-indigo-200 border border-black">${rtColTotals[0]}</td>
+                        </tr>
+                    `;
+                }
+
+                htmlContent += `
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                `;
+            }
+
+            container.innerHTML = htmlContent;
         }
 
         function renderTable(data) {
@@ -901,6 +1039,7 @@
                 const isPemilih = warga.statusPemilih === 'Pemilih';
                 const ketVal = warga.keterangan || '';
                 const usiaVal = warga.usia !== undefined && warga.usia !== '' ? warga.usia : calculateAge(warga.tanggalLahir);
+                const displayTps = String(warga.tps || '').includes('TPS') ? warga.tps : `TPS ${warga.tps || '1'}`;
 
                 html += `
                     <tr class="transition hover:bg-slate-50 ${borderClass}">
@@ -913,7 +1052,7 @@
                         <td class="px-3 py-3 text-center font-semibold text-slate-700">${usiaVal}</td>
                         <td class="px-3 py-3 text-center font-bold"><span class="px-2 py-0.5 text-xs rounded ${warga.jk === 'L' ? 'bg-blue-100 text-blue-700' : 'bg-pink-100 text-pink-700'}">${escapeHtml(warga.jk || '-')}</span></td>
                         <td class="px-3 py-3 text-center font-semibold text-slate-700">${escapeHtml(warga.rt || '-')}</td>
-                        <td class="px-3 py-3 text-center font-semibold text-slate-700">${escapeHtml(warga.tps || '-')}</td>
+                        <td class="px-3 py-3 text-center font-semibold text-indigo-700">${escapeHtml(displayTps)}</td>
                         <td class="px-4 py-3 text-center">
                             <select onchange="setStatusPemilih('${escapeHtml(String(warga.id))}', this.value)" class="w-full px-2.5 py-1.5 text-xs font-semibold rounded-lg border transition cursor-pointer ${isPemilih ? 'bg-emerald-50 text-emerald-700 border-emerald-300 hover:bg-emerald-100' : 'bg-rose-50 text-rose-700 border-rose-300 hover:bg-rose-100'}">
                                 <option value="Pemilih" ${isPemilih ? 'selected' : ''}>Pemilih</option>
@@ -1057,15 +1196,14 @@
             const ctxUmur = document.getElementById('chartUmur')?.getContext('2d');
             const ctxKeterangan = document.getElementById('chartKeterangan')?.getContext('2d');
 
-            // 1. Chart Pemilih per RT (Vertical Grouped Bar)
             if (ctxPemilih && !chartPemilihInstance) {
                 chartPemilihInstance = new Chart(ctxPemilih, {
                     type: 'bar',
                     data: {
-                        labels: Array.from({ length: 36 }, (_, i) => `RT ${String(i + 1).padStart(3, '0')}`),
+                        labels: ['TPS 1', 'TPS 2'],
                         datasets: [
-                            { label: 'Pemilih', data: new Array(36).fill(0), backgroundColor: '#10b981' },
-                            { label: 'Bukan Pemilih', data: new Array(36).fill(0), backgroundColor: '#f43f5e' }
+                            { label: 'Pemilih', data: [0, 0], backgroundColor: '#10b981' },
+                            { label: 'Bukan Pemilih', data: [0, 0], backgroundColor: '#f43f5e' }
                         ]
                     },
                     options: { 
@@ -1073,7 +1211,7 @@
                         maintainAspectRatio: false, 
                         layout: { padding: { top: 18 } },
                         scales: { 
-                            x: { ticks: { font: { size: 9 }, maxRotation: 90 } },
+                            x: { ticks: { font: { size: 12, weight: '600' } } },
                             y: { beginAtZero: true }
                         } 
                     },
@@ -1088,7 +1226,7 @@
                                         const val = dataset.data[index];
                                         if (val !== undefined && val !== null && val > 0) {
                                             ctx.save();
-                                            ctx.font = 'bold 9px Inter, sans-serif';
+                                            ctx.font = 'bold 11px Inter, sans-serif';
                                             ctx.fillStyle = datasetIndex === 0 ? '#047857' : '#be123c';
                                             ctx.textAlign = 'center';
                                             ctx.textBaseline = 'bottom';
@@ -1103,7 +1241,6 @@
                 });
             }
 
-            // 2. Chart Gender (Pie Chart)
             if (ctxGender && !chartGenderInstance) {
                 chartGenderInstance = new Chart(ctxGender, {
                     type: 'pie',
@@ -1112,7 +1249,6 @@
                 });
             }
 
-            // 3. Chart Umur (Bar Chart dengan Angka di Atas Batang)
             if (ctxUmur && !chartUmurInstance) {
                 chartUmurInstance = new Chart(ctxUmur, {
                     type: 'bar',
@@ -1150,7 +1286,6 @@
                 });
             }
 
-            // 4. GRAFIK BATANG KETERANGAN DATA WARGA DAN PEMILIH
             if (ctxKeterangan && !chartKeteranganInstance) {
                 chartKeteranganInstance = new Chart(ctxKeterangan, {
                     type: 'bar',
@@ -1229,25 +1364,25 @@
                 initCharts();
             }
 
-            // Update Status Hak Pilih per RT
-            const pemilihPerRt = new Array(36).fill(0);
-            const bukanPerRt = new Array(36).fill(0);
+            const pemilihPerTps = [0, 0];
+            const bukanPerTps = [0, 0];
             
             data.forEach(w => {
-                const rtNum = parseInt(w.rt, 10);
-                if (rtNum >= 1 && rtNum <= 36) {
-                    if (w.statusPemilih === 'Pemilih') pemilihPerRt[rtNum - 1]++;
-                    else bukanPerRt[rtNum - 1]++;
+                const tpsNum = parseInt(String(w.tps || '').replace(/[^0-9]/g, ''), 10);
+                const idx = (tpsNum === 2) ? 1 : 0;
+                if (w.statusPemilih === 'Pemilih') {
+                    pemilihPerTps[idx]++;
+                } else {
+                    bukanPerTps[idx]++;
                 }
             });
 
             if (chartPemilihInstance) {
-                chartPemilihInstance.data.datasets[0].data = pemilihPerRt;
-                chartPemilihInstance.data.datasets[1].data = bukanPerRt;
+                chartPemilihInstance.data.datasets[0].data = pemilihPerTps;
+                chartPemilihInstance.data.datasets[1].data = bukanPerTps;
                 chartPemilihInstance.update();
             }
 
-            // Update Gender
             if (chartGenderInstance) {
                 chartGenderInstance.data.datasets[0].data = [
                     data.filter(w => w.jk === 'L').length, 
@@ -1256,7 +1391,6 @@
                 chartGenderInstance.update();
             }
 
-            // Update Umur
             if (chartUmurInstance) {
                 chartUmurInstance.data.datasets[0].data = [
                     data.filter(w => (w.usia !== undefined ? w.usia : calculateAge(w.tanggalLahir)) < 17).length,
@@ -1267,9 +1401,7 @@
                 chartUmurInstance.update();
             }
 
-            // Agregasi Grafik Batang Horizontal Keterangan Data Warga & Pemilih
             const ketMap = {};
-            
             data.forEach(w => {
                 let ket = (w.keterangan || '').trim();
                 if (!ket) {
@@ -1289,15 +1421,14 @@
             });
 
             const sortedKet = Object.entries(ketMap).sort((a, b) => b[1].total - a[1].total);
-            
             const ketLabels = sortedKet.map(item => item[0]);
             const pemilihCounts = sortedKet.map(item => item[1].pemilih);
-            const LabelCounts = sortedKet.map(item => item[1].bukanPemilih);
+            const labelCounts = sortedKet.map(item => item[1].bukanPemilih);
 
             if (chartKeteranganInstance) {
                 chartKeteranganInstance.data.labels = ketLabels.length > 0 ? ketLabels : ['(Tidak ada data)'];
                 chartKeteranganInstance.data.datasets[0].data = pemilihCounts.length > 0 ? pemilihCounts : [0];
-                chartKeteranganInstance.data.datasets[1].data = LabelCounts.length > 0 ? LabelCounts : [0];
+                chartKeteranganInstance.data.datasets[1].data = labelCounts.length > 0 ? labelCounts : [0];
                 chartKeteranganInstance.update();
             }
         }
@@ -1369,7 +1500,6 @@
             }
         }
 
-        // MODIFIKASI: Kolom "NO. KK" dan "NIK" dihilangkan dari cetakan PDF ini untuk menjaga kerahasiaan
         function exportDataToPDF() {
             if (filteredData.length === 0) { 
                 showToast('Tidak ada data untuk diekspor!'); 
@@ -1386,12 +1516,8 @@
                 
                 doc.setFontSize(14);
                 doc.setFont("helvetica", "bold");
-                doc.text("DAFTAR PEMILIH & DATA WARGA", 14, 15);
+                doc.text("DAFTAR PEMILIH & DATA WARGA (TPS 1 & TPS 2)", 14, 15);
                 
-                doc.setFontSize(9);
-                doc.setFont("helvetica", "normal");
-                doc.text(`Tanggal Unduh: ${new Date().toLocaleDateString('id-ID')} | Total: ${filteredData.length} Data (NIK & NKK disembunyikan)`, 14, 21);
-
                 const newGroupRowIndexes = [];
                 let lastKK = null;
                 filteredData.forEach((item, index) => {
@@ -1401,7 +1527,6 @@
                     lastKK = item.kk;
                 });
 
-                // NO KK dan NIK dihapus dari Array head & body agar tidak muncul di file unduhan PDF.
                 doc.autoTable({
                     head: [["NO", "NAMA LENGKAP", "TEMPAT LAHIR", "TGL LAHIR", "UMUR", "JK", "RT", "TPS", "STATUS", "KETERANGAN"]],
                     body: filteredData.map((item, idx) => [
@@ -1412,11 +1537,11 @@
                         item.usia !== undefined ? item.usia : calculateAge(item.tanggalLahir), 
                         item.jk || '-', 
                         item.rt || '-', 
-                        item.tps || '-', 
+                        `TPS ${item.tps || '1'}`, 
                         item.statusPemilih || '-',
                         item.keterangan || '-'
                     ]),
-                    startY: 26,
+                    startY: 20,
                     styles: { fontSize: 8, cellPadding: 2 },
                     headStyles: { fillColor: [15, 23, 42] },
                     didDrawCell: function(data) {
@@ -1428,7 +1553,7 @@
                     }
                 });
 
-                doc.save(`data_warga_${new Date().toISOString().slice(0,10)}.pdf`);
+                doc.save(`data_warga_tps_${new Date().toISOString().slice(0,10)}.pdf`);
                 showToast('PDF berhasil diunduh!');
             } catch (e) {
                 console.error("PDF Export Error:", e);
@@ -1444,7 +1569,8 @@
                     return;
                 }
                 
-                const doc = new jsPDFClass({ orientation: 'landscape', unit: 'mm', format: 'a4' });
+                // Changed orientation to 'portrait'
+                const doc = new jsPDFClass({ orientation: 'portrait', unit: 'mm', format: 'a4' });
                 
                 const statusFilter = document.getElementById('rincian-filter-status')?.value || 'ALL';
                 const searchVal = document.getElementById('rincian-search')?.value.toLowerCase().trim() || '';
@@ -1453,20 +1579,15 @@
                 if (statusFilter === "Pemilih") statusText = "Khusus Pemilih";
                 if (statusFilter === "Bukan Pemilih") statusText = "Khusus Bukan Pemilih";
 
-                // Judul & Sub-judul Rata Tengah
-                doc.setFontSize(13);
+                doc.setFontSize(12);
                 doc.setFont("helvetica", "bold");
-                doc.text("TABEL RINCIAN KETERANGAN PEMILIH PER RT (RT 001 - RT 036)", 148.5, 12, { align: 'center' });
+                doc.text("TABEL RINCIAN KETERANGAN PEMILIH PER TPS", 105, 12, { align: 'center' });
                 
                 doc.setFontSize(8);
                 doc.setFont("helvetica", "normal");
-                doc.text(`Filter Status: ${statusText}  |  Tanggal Unduh: ${new Date().toLocaleDateString('id-ID')}`, 148.5, 17, { align: 'center' });
+                doc.text(`Filter Status: ${statusText}  |  Tanggal Unduh: ${new Date().toLocaleDateString('id-ID')}`, 105, 17, { align: 'center' });
 
-                const headRow = ["NO", "KETERANGAN"];
-                for (let i = 1; i <= 36; i++) {
-                    headRow.push(`RT${String(i).padStart(3, '0')}`);
-                }
-                headRow.push("TOTAL");
+                const headRow = ["NO", "KETERANGAN", "TPS 1", "TPS 2", "TOTAL"];
 
                 let sourceData = dataWarga;
                 if (statusFilter !== 'ALL') {
@@ -1480,65 +1601,54 @@
                     if (searchVal && !ket.toLowerCase().includes(searchVal)) return;
 
                     if (!ketMap[ket]) {
-                        ketMap[ket] = new Array(37).fill(0);
+                        ketMap[ket] = [0, 0, 0];
                     }
 
-                    const rtNum = parseInt(w.rt, 10);
-                    if (rtNum >= 1 && rtNum <= 36) {
-                        ketMap[ket][rtNum]++;
+                    const tpsNum = parseInt(String(w.tps || '').replace(/[^0-9]/g, ''), 10);
+                    if (tpsNum === 1 || tpsNum === 2) {
+                        ketMap[ket][tpsNum]++;
+                        ketMap[ket][0]++;
+                    } else {
+                        ketMap[ket][1]++;
                         ketMap[ket][0]++;
                     }
                 });
 
                 const sortedKets = Object.keys(ketMap).sort((a, b) => ketMap[b][0] - ketMap[a][0]);
-                const colTotals = new Array(37).fill(0);
+                const colTotals = [0, 0, 0];
                 const bodyRows = [];
 
                 sortedKets.forEach((ket, idx) => {
                     const rowData = ketMap[ket];
                     colTotals[0] += rowData[0];
+                    colTotals[1] += rowData[1];
+                    colTotals[2] += rowData[2];
 
-                    const row = [idx + 1, ket];
-                    for (let rt = 1; rt <= 36; rt++) {
-                        const count = rowData[rt];
-                        colTotals[rt] += count;
-                        row.push(count > 0 ? String(count) : '-');
-                    }
-                    row.push(String(rowData[0]));
-                    bodyRows.push(row);
+                    bodyRows.push([
+                        idx + 1,
+                        ket,
+                        rowData[1] > 0 ? String(rowData[1]) : '-',
+                        rowData[2] > 0 ? String(rowData[2]) : '-',
+                        String(rowData[0])
+                    ]);
                 });
 
-                const footRow = ["", "TOTAL PER RT:"];
-                for (let rt = 1; rt <= 36; rt++) {
-                    footRow.push(colTotals[rt] > 0 ? String(colTotals[rt]) : '-');
-                }
-                footRow.push(String(colTotals[0]));
+                const footRow = ["", "TOTAL KESELURUHAN:", colTotals[1] > 0 ? String(colTotals[1]) : '-', colTotals[2] > 0 ? String(colTotals[2]) : '-', String(colTotals[0])];
 
                 if (bodyRows.length === 0) {
                     showToast('Tidak ada data rincian untuk diekspor!');
                     return;
                 }
 
-                // Kalkulasi lebar kolom agar tepat memenuhi halaman dari margin kiri (8mm) ke margin kanan (289mm) -> Lebar area 281mm
-                // NO (8mm) + KETERANGAN (41mm) + 36 RT (36 x 6.0mm = 216mm) + TOTAL (16mm) = 281mm
-                const columnStyles = {
-                    0: { cellWidth: 8, halign: 'center' },
-                    1: { cellWidth: 41, halign: 'left' }
-                };
-                for (let i = 2; i <= 37; i++) {
-                    columnStyles[i] = { cellWidth: 6, halign: 'center' };
-                }
-                columnStyles[38] = { cellWidth: 16, halign: 'center', fontStyle: 'bold' };
-
                 doc.autoTable({
                     head: [headRow],
                     body: bodyRows,
                     foot: [footRow],
-                    startY: 21,
-                    margin: { top: 21, left: 8, right: 8, bottom: 10 },
+                    startY: 22,
+                    margin: { top: 22, left: 14, right: 14, bottom: 10 },
                     styles: { 
-                        fontSize: 5.5, 
-                        cellPadding: 1.2, 
+                        fontSize: 8.5, 
+                        cellPadding: 2.5, 
                         lineColor: [0, 0, 0], 
                         lineWidth: 0.15,
                         textColor: [15, 23, 42]
@@ -1547,24 +1657,26 @@
                         fillColor: [15, 23, 42], 
                         textColor: [255, 255, 255], 
                         fontStyle: 'bold', 
-                        halign: 'center',
-                        fontSize: 5.2,
-                        valign: 'middle'
+                        halign: 'center'
                     },
                     footStyles: { 
                         fillColor: [226, 232, 240], 
                         textColor: [15, 23, 42], 
                         fontStyle: 'bold', 
-                        halign: 'center',
-                        fontSize: 5.5,
-                        valign: 'middle'
+                        halign: 'center'
                     },
-                    columnStyles: columnStyles,
+                    columnStyles: {
+                        0: { cellWidth: 12, halign: 'center' },
+                        1: { cellWidth: 105, halign: 'left' },
+                        2: { cellWidth: 20, halign: 'center' },
+                        3: { cellWidth: 20, halign: 'center' },
+                        4: { cellWidth: 25, halign: 'center', fontStyle: 'bold' }
+                    },
                     theme: 'grid'
                 });
 
-                doc.save(`rincian_pemilih_rt_${new Date().toISOString().slice(0,10)}.pdf`);
-                showToast('PDF Rincian Pemilih berhasil diunduh!');
+                doc.save(`rincian_pemilih_tps_${new Date().toISOString().slice(0,10)}.pdf`);
+                showToast('PDF Rincian Pemilih TPS berhasil diunduh!');
             } catch (e) {
                 console.error("PDF Rincian Export Error:", e);
                 showToast('Gagal membuat file PDF Rincian.');
